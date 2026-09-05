@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "story/story_literal/char_sheet/_char-center.md",
+                "file": "story/story_literal/char_sheet/Zach.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "_char-center"
+              "title": "Zach"
             }
           }
         ]
@@ -190,25 +190,41 @@
   },
   "active": "ebf273ceb251044f",
   "lastOpenFiles": [
-    "story/story_literal/theme_sheet/highschool_chic.md",
-    "story/story_literal/author_notes/2026/Aug - Dec.md",
+    "story/story_literal/char_sheet/Sheila.md",
+    "story/story_literal/char_sheet/Salman.md",
+    "story/story_literal/char_sheet/Royce.md",
+    "story/story_literal/char_sheet/Zach.md",
+    "story/story_literal/char_sheet/Zahra.md",
+    "story/story_literal/char_sheet/Zaidan.md",
+    "story/story_literal/char_sheet/Zubaidah.md",
+    "story/story_literal/char_sheet/Elyas.md",
+    "story/story_literal/char_sheet/_template.md",
+    "story/story_literal/char_sheet/Elisa.md",
+    "story/story_literal/char_sheet/Renata.md",
+    "story/story_literal/char_sheet/Mirabella.md",
+    "story/story_literal/char_sheet/Nicholas.md",
+    "story/story_literal/char_sheet/Miranda.md",
+    "story/story_literal/char_sheet/Kevin.md",
+    "story/story_literal/char_sheet/Charlotte.md",
     "story/story_literal/char_sheet/Chika.md",
-    "story/story_literal/theme_sheet/md",
-    "story/story_literal/theme_sheet/highschool_chic",
+    "story/story_literal/char_sheet/_template 1 - Copy (14).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (13).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (19).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (18).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (17).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (16).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (15).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (12).md",
+    "story/story_literal/char_sheet/_template 1 - Copy (11).md",
     "story/story_literal/theme_sheet",
-    "story/story_literal/plot_sheet",
-    "story/story_literal/char_sheet/_char-center.md",
-    "story/story_literal/char_sheet/char-center.md",
     "story/story_literal/char_sheet",
-    "story/story_literal/untitled/char-center.md",
-    "story/story_literal/untitled/Kerangka.md",
-    "story/story_literal/untitled",
-    "story/story_literal/Story Vault Management.md",
     "story/story_literal/author_notes/2026",
     "story/story_literal/author_notes",
-    "Core.md",
-    "live_project/RPG Game/Center.md",
-    "story/story_literal",
-    "story/story_board"
+    "live_project/RPG Game/rpg_schema.sql",
+    "story/story_literal/theme_sheet/md",
+    "story/story_literal/theme_sheet/highschool_chic",
+    "story/story_literal/plot_sheet",
+    "story/story_literal/untitled",
+    "story/story_literal"
   ]
 }
