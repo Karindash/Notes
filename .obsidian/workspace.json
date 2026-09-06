@@ -1,0 +1,208 @@
+{
+  "main": {
+    "id": "4257cda9445a7ee3",
+    "type": "split",
+    "children": [
+      {
+        "id": "e43e2220d903a4f2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f077ea0bd58d461e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "project/live_project/general_setup/Generic API.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Generic API"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3dcce3e8afd90297",
+    "type": "split",
+    "children": [
+      {
+        "id": "328e38d55d87a246",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "53e67db1bb59c4f6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "3d969bf8e9353e22",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "5b643b58e1bcae73",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "89cde31cc00b5787",
+    "type": "split",
+    "children": [
+      {
+        "id": "117c77a5b9a3b022",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4614d59d44115936",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "project/live_project/general_setup/Generic API.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "b23c143124f6d8a4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "project/live_project/general_setup/Generic API.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "c19734ad526a7d55",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "06d8d6b7a86e40c0",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "d7be0938615d9b69",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "project/live_project/general_setup/Generic API.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "24d9b02fc8d18d55",
+            "type": "leaf",
+            "state": {
+              "type": "mermaid-toolbar-view",
+              "state": {},
+              "icon": "trident-custom",
+              "title": "Mermaid Toolbar"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "mermaid-tools:Open Mermaid Toolbar": false
+    }
+  },
+  "active": "24d9b02fc8d18d55",
+  "lastOpenFiles": [
+    "project/live_project/general_setup",
+    "project/live_project/general_setup/Generic API.md",
+    "project/live_project/RPG Game/rpg_schema.sql"
+  ]
+}
