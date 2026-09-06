@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "project/live_project/general_setup/Generic API.md",
+                "file": "project/live_project/general_setup/Exec Command for Project Management.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Generic API"
+              "title": "Exec Command for Project Management"
             }
           }
         ]
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "project/live_project/general_setup/Generic API.md",
+                "file": "project/live_project/general_setup/Exec Command for Project Management.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "project/live_project/general_setup/Generic API.md",
+                "file": "project/live_project/general_setup/Exec Command for Project Management.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "project/live_project/general_setup/Generic API.md",
+                "file": "project/live_project/general_setup/Exec Command for Project Management.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -199,10 +199,11 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "24d9b02fc8d18d55",
+  "active": "f077ea0bd58d461e",
   "lastOpenFiles": [
-    "project/live_project/general_setup",
     "project/live_project/general_setup/Generic API.md",
+    "project/live_project/general_setup/Exec Command for Project Management.md",
+    "project/live_project/general_setup",
     "project/live_project/RPG Game/rpg_schema.sql"
   ]
 }
