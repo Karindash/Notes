@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "live_project/RPG Game/Center.md",
+                "file": "live_project/Farm Game/Livestock.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Center"
+              "title": "Livestock"
             }
           }
         ]
@@ -190,6 +190,11 @@
   },
   "active": "ebf273ceb251044f",
   "lastOpenFiles": [
+    "live_project/RPG Game/Center.md",
+    "live_project/Farm Game/Livestock.md",
+    "live_project/Farm Game",
+    "live_project/RPG Game/systems/items.md",
+    "live_project/RPG Game/systems",
     "live_project/RPG Game/rpg_schema.sql",
     "Core.md",
     "story/story_literal/char_sheet/_char-center.md",
@@ -206,10 +211,6 @@
     "story/story_literal/untitled/Kerangka.md",
     "story/story_literal/untitled",
     "story/story_literal/Story Vault Management.md",
-    "story/story_literal/author_notes/2026",
-    "story/story_literal/author_notes",
-    "live_project/RPG Game/Center.md",
-    "story/story_literal",
-    "story/story_board"
+    "story/story_literal/author_notes/2026"
   ]
 }

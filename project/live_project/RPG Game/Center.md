@@ -10,6 +10,13 @@
 - Domain System
 - Storage System
 
+**ENTITIES**
+- Player
+- NPC
+- Items
+- Buildings
+- 
+
 #### ROLE MODEL
 * Durango
 * Heartwood Online
