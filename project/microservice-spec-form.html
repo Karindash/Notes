@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservice Specification Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .dynamic-list {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .list-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .list-item input {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #059669;
+        }
+
+        .btn-remove {
+            background: #ef4444;
+            color: white;
+            padding: 8px 12px;
+        }
+
+        .btn-remove:hover {
+            background: #dc2626;
+        }
+
+        .btn-submit {
+            background: #667eea;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            margin-top: 30px;
+        }
+
+        .btn-submit:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .error-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .error-table th,
+        .error-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .error-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .error-table input,
+        .error-table select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge-required {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .badge-optional {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .info-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #3730a3;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Microservice Specification Form</h1>
+        <p class="subtitle">Interactive illustration of 11 key specification features</p>
+
+        <form id="microserviceForm">
+            
+            <!-- 1. Service Overview -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">1</span>
+                    Service Overview
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Service Name <span class="badge badge-required">Required</span></label>
+                        <input type="text" name="serviceName" placeholder="e.g., user-management-service" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Domain</label>
+                        <select name="domain">
+                            <option value="">Select Domain</option>
+                            <option value="auth">Authentication & Authorization</option>
+                            <option value="payment">Payment & Billing</option>
+                            <option value="user">User Management</option>
+                            <option value="order">Order Management</option>
+                            <option value="inventory">Inventory</option>
+                            <option value="notification">Notification</option>
+                            <option value="analytics">Analytics</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Owner/Team</label>
+                        <input type="text" name="team" placeholder="e.g., Platform Team">
+                    </div>
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" name="version" placeholder="e.g., 1.0.0" value="1.0.0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Purpose</label>
+                    <textarea name="purpose" placeholder="Describe what this service does and why it exists..."></textarea>
+                </div>
+            </div>
+
+            <!-- 2. Business Scope & Definition -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">2</span>
+                    Business Scope & Definition
+                </h2>
+                <div class="form-group">
+                    <label>Business Context</label>
+                    <textarea name="businessContext" placeholder="Describe the business problem this service solves..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>In Scope (What this service handles)</label>
+                    <textarea name="inScope" placeholder="List responsibilities within scope..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Out of Scope (What this service does NOT handle)</label>
+                    <textarea name="outScope" placeholder="List what's explicitly excluded..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Key Business Rules</label>
+                    <div class="dynamic-list" id="businessRulesList">
+                        <div class="list-item">
+                            <input type="text" placeholder="Rule name" name="ruleName[]">
+                            <input type="text" placeholder="Description" name="ruleDesc[]">
+                            <select name="rulePriority[]">
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addBusinessRule()">+ Add Business Rule</button>
+                </div>
+            </div>
+
+            <!-- 3. Functional Requirements -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">3</span>
+                    Functional Requirements
+                </h2>
+                <div class="form-group">
+                    <label>Primary Use Case</label>
+                    <input type="text" name="useCase" placeholder="e.g., User Registration">
+                </div>
+                <div class="form-group">
+                    <label>API Endpoints</label>
+                    <div class="dynamic-list" id="endpointsList">
+                        <div class="list-item">
+                            <select name="httpMethod[]">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="DELETE">DELETE</option>
+                            </select>
+                            <input type="text" placeholder="/api/v1/resource" name="endpointPath[]">
+                            <input type="text" placeholder="Purpose" name="endpointPurpose[]">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addEndpoint()">+ Add Endpoint</button>
+                </div>
+            </div>
+
+            <!-- 4. Validation Rules -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">4</span>
+                    Validation Rules
+                </h2>
+                <div class="info-box">
+                    Define input validation, business validation, and cross-field validation rules
+                </div>
+                <div class="form-group">
+                    <label>Input Validations</label>
+                    <table class="error-table">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Validation Rule</th>
+                            </tr>
+                        </thead>
+                        <tbody id="validationTableBody">
+                            <tr>
+                                <td><input type="text" name="valField[]" placeholder="email"></td>
+                                <td>
+                                    <select name="valType[]">
+                                        <option value="string">String</option>
+                                        <option value="integer">Integer</option>
+                                        <option value="boolean">Boolean</option>
+                                        <option value="array">Array</option>
+                                        <option value="object">Object</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="valRequired[]">
+                                </td>
+                                <td><input type="text" name="valRule[]" placeholder="Valid email format"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-add" onclick="addValidation()">+ Add Validation</button>
+                </div>
+                <div class="form-group">
+                    <label>Business Validations</label>
+                    <textarea name="businessValidations" placeholder="e.g., User cannot create more than 5 items at once"></textarea>
+                </div>
+            </div>
+
+            <!-- 5. Error Codes & Handling -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">5</span>
+                    Error Codes & Handling
+                </h2>
+                <div class="form-group">
+                    <label>Error Code Convention</label>
+                    <select name="errorConvention">
+                        <option value="category_number">CATEGORY_NUMBER (e.g., VAL_001)</option>
+                        <option value="http_category">HTTP_CATEGORY (e.g., 400_VAL)</option>
+                        <option value="service_error">SERVICE_ERROR_NUMBER (e.g., USR_ERR_001)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Error Catalog</label>
+                    <table class="error-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>HTTP Status</th>
+                                <th>Message</th>
+                                <th>Retryable</th>
+                            </tr>
+                        </thead>
+                        <tbody id="errorTableBody">
+                            <tr>
+                                <td><input type="text" name="errorCode[]" placeholder="VAL_001"></td>
+                                <td>
+                                    <select name="httpStatus[]">
+                                        <option value="400">400 Bad Request</option>
+                                        <option value="401">401 Unauthorized</option>
+                                        <option value="403">403 Forbidden</option>
+                                        <option value="404">404 Not Found</option>
+                                        <option value="422">422 Unprocessable</option>
+                                        <option value="500">500 Server Error</option>
+                                        <option value="503">503 Unavailable</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" name="errorMessage[]" placeholder="Invalid email format"></td>
+                                <td><input type="checkbox" name="retryable[]"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-add" onclick="addError()">+ Add Error</button>
+                </div>
+            </div>
+
+            <!-- 6. Data Structure & Schema -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">6</span>
+                    Data Structure & Schema
+                </h2>
+                <div class="form-group">
+                    <label>Database Type</label>
+                    <select name="databaseType">
+                        <option value="">Select Database</option>
+                        <option value="postgresql">PostgreSQL</option>
+                        <option value="mysql">MySQL</option>
+                        <option value="mongodb">MongoDB</option>
+                        <option value="dynamodb">DynamoDB</option>
+                        <option value="redis">Redis</option>
+                        <option value="cassandra">Cassandra</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Primary Table/Collection Name</label>
+                    <input type="text" name="tableName" placeholder="e.g., users">
+                </div>
+                <div class="form-group">
+                    <label>Key Fields (comma-separated)</label>
+                    <input type="text" name="keyFields" placeholder="e.g., id, email, created_at, status">
+                </div>
+                <div class="form-group">
+                    <label>Relationships</label>
+                    <textarea name="relationships" placeholder="Describe table relationships, foreign keys, etc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Indexes</label>
+                    <textarea name="indexes" placeholder="List required indexes for performance"></textarea>
+                </div>
+            </div>
+
+            <!-- 7. Non-Functional Requirements -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">7</span>
+                    Non-Functional Requirements
+                </h2>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Response Time Target (ms)</label>
+                        <input type="number" name="responseTime" placeholder="200">
+                    </div>
+                    <div class="form-group">
+                        <label>Throughput (req/sec)</label>
+                        <input type="number" name="throughput" placeholder="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>SLA Uptime (%)</label>
+                        <input type="number" name="sla" placeholder="99.9" step="0.1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Authentication Method</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="auth" value="jwt" id="auth-jwt">
+                            <label for="auth-jwt">JWT</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="auth" value="oauth2" id="auth-oauth">
+                            <label for="auth-oauth">OAuth2</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="auth" value="apikey" id="auth-apikey">
+                            <label for="auth-apikey">API Key</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="auth" value="basic" id="auth-basic">
+                            <label for="auth-basic">Basic Auth</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Horizontal Scaling</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" name="scaling" value="yes" id="scale-yes">
+                            <label for="scale-yes">Yes</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" name="scaling" value="no" id="scale-no">
+                            <label for="scale-no">No</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" name="scaling" value="planned" id="scale-planned" checked>
+                            <label for="scale-planned">Planned</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Security Requirements</label>
+                    <textarea name="security" placeholder="Describe encryption, PII handling, compliance requirements..."></textarea>
+                </div>
+            </div>
+
+            <!-- 8. Dependencies & Integrations -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">8</span>
+                    Dependencies & Integrations
+                </h2>
+                <div class="form-group">
+                    <label>Upstream Dependencies (Services this depends on)</label>
+                    <div class="dynamic-list" id="upstreamList">
+                        <div class="list-item">
+                            <input type="text" placeholder="Service name" name="upstreamService[]">
+                            <select name="upstreamProtocol[]">
+                                <option value="REST">REST</option>
+                                <option value="gRPC">gRPC</option>
+                                <option value="GraphQL">GraphQL</option>
+                                <option value="WebSocket">WebSocket</option>
+                                <option value="EventBus">Event Bus</option>
+                            </select>
+                            <input type="text" placeholder="Fallback strategy" name="upstreamFallback[]">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addUpstream()">+ Add Dependency</button>
+                </div>
+                <div class="form-group">
+                    <label>Downstream Consumers (Services that depend on this)</label>
+                    <textarea name="downstream" placeholder="List services that consume this service..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>External APIs</label>
+                    <textarea name="externalApis" placeholder="Third-party APIs, payment gateways, etc."></textarea>
+                </div>
+            </div>
+
+            <!-- 9. Data Flow & Sequence -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">9</span>
+                    Data Flow & Sequence
+                </h2>
+                <div class="form-group">
+                    <label>Main Flow Description</label>
+                    <textarea name="mainFlow" placeholder="Describe the main data flow step by step..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>State Transitions</label>
+                    <input type="text" name="stateTransitions" placeholder="e.g., DRAFT → PENDING → APPROVED → ACTIVE">
+                </div>
+                <div class="form-group">
+                    <label>Asynchronous Processing</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="async" value="queue" id="async-queue">
+                            <label for="async-queue">Message Queue</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="async" value="eventbus" id="async-event">
+                            <label for="async-event">Event Bus</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="async" value="webhook" id="async-webhook">
+                            <label for="async-webhook">Webhooks</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. Testing Requirements -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">10</span>
+                    Testing Requirements
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Unit Test Coverage Target (%)</label>
+                        <input type="number" name="unitTestCoverage" placeholder="80" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Integration Test Coverage Target (%)</label>
+                        <input type="number" name="integrationTestCoverage" placeholder="70" min="0" max="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Critical Test Scenarios</label>
+                    <textarea name="testScenarios" placeholder="List critical paths that must be tested..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Edge Cases to Test</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="empty" id="edge-empty">
+                            <label for="edge-empty">Empty input</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="null" id="edge-null">
+                            <label for="edge-null">Null values</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="maxlength" id="edge-max">
+                            <label for="edge-max">Max length</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="special" id="edge-special">
+                            <label for="edge-special">Special characters</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="concurrent" id="edge-concurrent">
+                            <label for="edge-concurrent">Concurrent requests</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="edgeCase" value="timeout" id="edge-timeout">
+                            <label for="edge-timeout">Timeout scenarios</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 11. Migration & Deployment -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">11</span>
+                    Migration & Deployment
+                </h2>
+                <div class="form-group">
+                    <label>Deployment Strategy</label>
+                    <select name="deploymentStrategy">
+                        <option value="">Select Strategy</option>
+                        <option value="rolling">Rolling Deployment</option>
+                        <option value="bluegreen">Blue-Green Deployment</option>
+                        <option value="canary">Canary Deployment</option>
+                        <option value="recreate">Recreate</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Database Migration Strategy</label>
+                    <select name="migrationStrategy">
+                        <option value="">Select Strategy</option>
+                        <option value="forward">Forward-only</option>
+                        <option value="reversible">Reversible migrations</option>
+                        <option value="manual">Manual migrations</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Backward Compatibility (versions)</label>
+                    <input type="number" name="backwardCompatibility" placeholder="2" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Feature Flags Required</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" name="featureFlags" value="yes" id="ff-yes">
+                            <label for="ff-yes">Yes</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" name="featureFlags" value="no" id="ff-no" checked>
+                            <label for="ff-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Environment Variables</label>
+                    <textarea name="envVars" placeholder="List required configuration variables...&#10;e.g.,&#10;DB_HOST&#10;DB_PORT&#10;API_KEY"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Rollback Procedure</label>
+                    <textarea name="rollbackProcedure" placeholder="Describe how to rollback in case of issues..."></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-submit">📋 Generate Specification Summary</button>
+        </form>
+    </div>
+
+    <script>
+        // Form submission handler
+        document.getElementById('microserviceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            console.log('Specification Data:', data);
+            alert('✅ Specification data logged to console!\n\nIn a real application, this would:\n• Generate a formatted document\n• Send data to a backend API\n• Create tickets/tasks\n• Generate architecture diagrams');
+        });
+
+        // Dynamic list functions
+        function addBusinessRule() {
+            const container = document.getElementById('businessRulesList');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Rule name" name="ruleName[]">
+                <input type="text" placeholder="Description" name="ruleDesc[]">
+                <select name="rulePriority[]">
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <button type="button" class="btn btn-remove" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addEndpoint() {
+            const container = document.getElementById('endpointsList');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <select name="httpMethod[]">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="PATCH">PATCH</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                <input type="text" placeholder="/api/v1/resource" name="endpointPath[]">
+                <input type="text" placeholder="Purpose" name="endpointPurpose[]">
+                <button type="button" class="btn btn-remove" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addValidation() {
+            const tbody = document.getElementById('validationTableBody');
+            const newRow = tbody.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" name="valField[]" placeholder="fieldName"></td>
+                <td>
+                    <select name="valType[]">
+                        <option value="string">String</option>
+                        <option value="integer">Integer</option>
+                        <option value="boolean">Boolean</option>
+                        <option value="array">Array</option>
+                        <option value="object">Object</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="checkbox" name="valRequired[]">
+                </td>
+                <td><input type="text" name="valRule[]" placeholder="Validation rule"></td>
+            `;
+        }
+
+        function addError() {
+            const tbody = document.getElementById('errorTableBody');
+            const newRow = tbody.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" name="errorCode[]" placeholder="ERR_XXX"></td>
+                <td>
+                    <select name="httpStatus[]">
+                        <option value="400">400 Bad Request</option>
+                        <option value="401">401 Unauthorized</option>
+                        <option value="403">403 Forbidden</option>
+                        <option value="404">404 Not Found</option>
+                        <option value="422">422 Unprocessable</option>
+                        <option value="500">500 Server Error</option>
+                        <option value="503">503 Unavailable</option>
+                    </select>
+                </td>
+                <td><input type="text" name="errorMessage[]" placeholder="Error message"></td>
+                <td><input type="checkbox" name="retryable[]"></td>
+            `;
+        }
+
+        function addUpstream() {
+            const container = document.getElementById('upstreamList');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Service name" name="upstreamService[]">
+                <select name="upstreamProtocol[]">
+                    <option value="REST">REST</option>
+                    <option value="gRPC">gRPC</option>
+                    <option value="GraphQL">GraphQL</option>
+                    <option value="WebSocket">WebSocket</option>
+                    <option value="EventBus">Event Bus</option>
+                </select>
+                <input type="text" placeholder="Fallback strategy" name="upstreamFallback[]">
+                <button type="button" class="btn btn-remove" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(newItem);
+        }
+    </script>
+</body>
+</html>
