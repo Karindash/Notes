@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10151d">
+<title>HCCT — Human Cognitive Capability Taxonomy</title>
+<style>
+:root{--bg:#0d1219;--panel:#141c26;--panel2:#192431;--line:#293746;--text:#e8eef5;--muted:#9aabba;--accent:#8bd3c7;--accent2:#b5a6ff;--warm:#f2c078;--danger:#ff9d9d;--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1b2b37 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+aside{border-right:1px solid var(--line);padding:26px 18px;background:#0c1219cc;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:11px;align-items:center;padding:0 9px 28px}.mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#10151d;font-weight:900}.brand b{display:block;letter-spacing:.08em;font-size:13px}.brand small{color:var(--muted);font-size:11px}
+.nav-label{color:#6f8293;text-transform:uppercase;font-size:10px;letter-spacing:.14em;padding:12px 10px 7px}.nav{display:flex;align-items:center;gap:11px;width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;border-radius:10px;text-align:left;margin:2px 0}.nav:hover,.nav.active{background:var(--panel2);color:var(--text)}.nav.active{box-shadow:inset 2px 0 var(--accent)}.nav span:first-child{width:18px;text-align:center}.side-note{position:absolute;bottom:20px;left:20px;right:20px;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--muted);font-size:11px}
+main{max-width:1200px;width:100%;margin:auto;padding:38px 5vw 70px}.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;margin-bottom:28px}.version{border:1px solid var(--line);padding:5px 9px;border-radius:20px;color:var(--accent)}
+.page{display:none}.page.active{display:block}.eyebrow{color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:700}h1{font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-.045em;margin:12px 0 18px;max-width:850px}h2{font-size:25px;letter-spacing:-.025em;margin:0 0 8px}h3{font-size:16px;margin:0 0 7px}p{color:var(--muted);margin:0 0 14px}.lead{font-size:18px;max-width:760px;line-height:1.65}.hero{padding:28px 0 36px}.hero-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:10px 15px}.btn.primary{background:var(--accent);border-color:var(--accent);color:#10201f;font-weight:700}.btn:hover{filter:brightness(1.08)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:linear-gradient(145deg,var(--panel),#111923);border:1px solid var(--line);border-radius:var(--radius);padding:19px}.card p{font-size:13px}.card .num{font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:14px}.section{margin-top:36px}.definition{border-left:2px solid var(--accent);padding:4px 0 4px 18px;max-width:850px;font-size:17px;color:#d6e1ea}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.pill{font-size:11px;border:1px solid var(--line);padding:5px 9px;border-radius:20px;color:var(--muted)}
+.phase-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin:18px 0 25px}.phase-head p{max-width:650px}.progress-wrap{min-width:150px;text-align:right}.progress-label{font-size:11px;color:var(--muted)}.progress{height:6px;background:#25313d;border-radius:10px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.workspace{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:16px;align-items:start}.stack{display:grid;gap:12px}.operation{display:flex;gap:12px;align-items:flex-start}.operation input{accent-color:var(--accent);margin-top:5px;width:16px;height:16px}.operation label{flex:1}.operation strong{display:block;font-size:14px}.operation small{display:block;color:var(--muted);font-size:12px}.tag{font-size:10px;color:var(--accent);border:1px solid #365b58;border-radius:20px;padding:3px 7px;white-space:nowrap}
+textarea,input[type=text],select{width:100%;background:#0e151d;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:10px;outline:none}textarea:focus,input:focus,select:focus{border-color:var(--accent)}textarea{min-height:90px;resize:vertical}.field{margin:14px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.list{display:grid;gap:8px}.question{padding:13px;background:#101821;border:1px solid var(--line);border-radius:11px}.question b{font-size:13px}.question p{font-size:12px;margin:4px 0 0}.empty{color:var(--muted);font-size:13px;padding:12px 0}.footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{background:#1d2a31;border:1px solid #35514e;border-radius:12px;padding:13px;color:#c5ddd7;font-size:12px;margin-top:16px}.notice ul{margin:6px 0 0;padding-left:18px}.notice li{margin:3px 0}
+.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{text-align:left;border-bottom:1px solid var(--line);padding:10px 8px}.table th{color:var(--muted);font-weight:500}.table td{color:#d8e2eb}
+/* ---- Lab ---- */
+.lab-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(290px,.9fr);gap:16px;align-items:start}
+.runhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.stage{display:grid;gap:16px;justify-items:center;padding:8px 0 4px}
+.targetbox{border:1px solid var(--line);border-radius:10px;padding:6px 14px;color:var(--muted);font-size:13px}.targetbox b{color:var(--accent);font-size:20px;margin-left:6px}
+.nb-grid{--cell:clamp(62px,15vw,92px);display:grid;grid-template-columns:repeat(3,var(--cell));gap:8px}
+.cell{width:var(--cell);height:var(--cell);border-radius:14px;background:#0e151d;border:1px solid var(--line);display:grid;place-items:center;font-size:calc(var(--cell)*.46);font-weight:800;color:#10201f}
+.cell.on{background:var(--accent);border-color:var(--accent)}
+.nb-grid.single .cell:not(.center){visibility:hidden}
+.resp{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.rbtn{min-width:150px;padding:14px 18px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-weight:700;touch-action:manipulation;user-select:none}
+.rbtn small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.rbtn.pressed{border-color:var(--accent);background:#1e3a3a}.rbtn.ok{background:#1c3b2b;border-color:#57c28a}.rbtn.bad{background:#3d2226;border-color:var(--danger)}
+.ladder{display:grid;gap:6px;margin-top:10px}.ladder.locked{opacity:.5;pointer-events:none}
+.lv{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:#101821;cursor:pointer}
+.lv:hover{border-color:#3b5163}.lv.sel{border-color:var(--accent);background:#14232b}.lv[data-tier=Impossible]{border-style:dashed}
+.lv>b{width:30px;color:var(--accent);font-size:12px}.lvmain{flex:1;min-width:0}.lvmain strong{display:block;font-size:13px}.lvmain small{color:var(--muted);font-size:11px}
+.st{font-size:10px;border-radius:20px;padding:3px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.st.mastered{color:var(--accent);border-color:#365b58}.st.developing{color:var(--warm);border-color:#6b5530}.st.notyet{color:var(--danger);border-color:#6b3a3a}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;width:100%;margin:12px 0}
+.metric{background:#101821;border:1px solid var(--line);border-radius:11px;padding:11px}.metric small{display:block;color:var(--muted);font-size:11px}.metric b{font-size:17px}
+.big{font-size:54px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.flag{border:1px solid #6b5530;background:#2a2318;color:#f0d9b0;border-radius:10px;padding:8px 11px;font-size:12px;margin:6px 0}
+.links{display:grid;gap:8px;margin-top:10px}.link{display:flex;gap:10px;align-items:flex-start;font-size:12px;border-bottom:1px solid var(--line);padding-bottom:8px}.link .w{min-width:54px;color:var(--accent)}.link.conf .w{color:var(--warm)}.link span{color:var(--muted)}.link strong{display:block;color:var(--text);font-weight:600}
+.cards4{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:6px 0 16px}
+svg.chart text{fill:var(--muted);font-size:11px}
+.scroll{overflow:auto}
+@media(max-width:850px){.shell{grid-template-columns:1fr}aside{height:auto;position:relative;padding:12px 15px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:4px 5px 12px}.side-note{display:none}.nav-row{display:flex;gap:5px;overflow:auto}.nav-label{display:none}.nav{white-space:nowrap;width:auto;padding:8px 10px}.workspace,.lab-grid{grid-template-columns:1fr}main{padding:25px 18px 55px}.grid{grid-template-columns:1fr 1fr}.phase-head{display:block}.progress-wrap{text-align:left;margin-top:15px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.topline{margin-bottom:18px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside>
+  <div class="brand"><div class="mark">H</div><div><b>HCCT</b><small>Human Cognitive Capability Taxonomy</small></div></div>
+  <div class="nav-label">Workspace</div>
+  <div class="nav-row">
+    <button class="nav active" data-page="about"><span>◈</span> About</button>
+    <button class="nav" data-page="phase1"><span>⌘</span> Phase 1 · Primitive review</button>
+    <button class="nav" data-page="lab"><span>◉</span> Lab · N-back ladder</button>
+    <button class="nav" data-page="profile"><span>▤</span> Profile</button>
+  </div>
+  <div class="side-note"><b style="color:var(--text)">Exploratory framework</b><br>HCCT v0.2 is a working model, not a validated psychological test.</div>
+</aside>
+<main>
+  <div class="topline"><span>COGNITIVE SYSTEMS / RESEARCH SPACE</span><span class="version">VERSION 0.2</span></div>
+
+  <section class="page active" id="about">
+    <div class="hero">
+      <div class="eyebrow">An evolving taxonomy of human capability</div>
+      <h1>Understand the capabilities behind human decisions.</h1>
+      <p class="lead">HCCT is an exploratory framework for mapping how people perceive, process, remember, reason, decide, act, learn, and adapt across different situations.</p>
+      <div class="hero-actions"><button class="btn primary" data-go="lab">Try the N-back lab →</button><button class="btn" data-go="phase1">Explore Phase 1</button><button class="btn" id="downloadNotes">Download project notes</button></div>
+    </div>
+    <div class="definition">Working definition: Human cognitive capability is the set of mental and behavioral capabilities through which a person receives and interprets stimuli, transforms information, evaluates situations, makes decisions, executes actions, learns, and adapts.</div>
+    <div class="section">
+      <div class="eyebrow">New in v0.2</div><h2>The first measurable task</h2>
+      <p>A twelve-level n-back ladder for working memory, from an easy 0-back to a deliberately impossible dual 7-back. Scoring uses signal detection (d′) rather than raw accuracy, and every block carries validity flags and an evidence rating. Insufficient evidence is shown as <em>unassessed</em>, never as low ability.</p>
+    </div>
+    <div class="section">
+      <div class="eyebrow">Framework architecture</div><h2>From foundational operations to real-world abilities</h2>
+      <p>Start with broad operations, decompose them into observable sub-capabilities, then map how they combine in everyday tasks.</p>
+      <div class="grid">
+        <article class="card"><div class="num">01 / PRIMITIVES</div><h3>Primitive operations</h3><p>Candidate foundational functions such as perception, attention, memory, reasoning, and adaptation.</p></article>
+        <article class="card"><div class="num">02 / COMPONENTS</div><h3>Sub-capabilities</h3><p>More specific capabilities that can be defined and investigated, such as working memory or causal reasoning.</p></article>
+        <article class="card"><div class="num">03 / IN PRACTICE</div><h3>Composite abilities</h3><p>Real-world performance that emerges from multiple capabilities working together, such as tactical decision-making.</p></article>
+      </div>
+    </div>
+    <div class="section">
+      <div class="eyebrow">Initial taxonomy</div><h2>Eight candidate core groups</h2>
+      <div class="grid" id="coreCards"></div>
+    </div>
+    <div class="section">
+      <div class="eyebrow">Design principles</div><h2>How we will keep the model useful</h2>
+      <div class="grid">
+        <article class="card"><h3>Observable</h3><p>Every capability should eventually connect to evidence, behavior, or task performance.</p></article>
+        <article class="card"><h3>Distinct where possible</h3><p>Overlaps are documented rather than hidden. Categories must earn their place.</p></article>
+        <article class="card"><h3>Non-hierarchical</h3><p>No capability is automatically superior. A profile is multidimensional, not a single rank.</p></article>
+      </div>
+    </div>
+    <div class="section"><div class="notice">Important: HCCT is currently conceptual. Its categories, boundaries, and assessment methods have not been scientifically validated.</div></div>
+  </section>
+
+  <section class="page" id="phase1">
+    <div class="eyebrow">Development / Phase 01</div>
+    <div class="phase-head">
+      <div><h1 style="font-size:42px">Primitive review</h1><p>Review the proposed foundational operations. Decide what each group means, whether it belongs at this level, and what needs to change.</p></div>
+      <div class="progress-wrap"><div class="progress-label"><span id="progressText">0 of 8 reviewed</span></div><div class="progress"><i id="progressBar"></i></div></div>
+    </div>
+    <div class="workspace">
+      <div class="stack">
+        <div class="card">
+          <div class="eyebrow">Review checklist</div><h2 style="margin-bottom:5px">Candidate core groups</h2><p>Mark a group as reviewed when you have considered its scope. This does not mean it is approved.</p>
+          <div class="stack" id="operationList"></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Design decision</div><h2>What qualifies as a primitive?</h2>
+          <p>Use this space to record the rule we will apply consistently when reviewing categories.</p>
+          <div class="field"><label for="primitiveRule">Working criterion</label><textarea id="primitiveRule" placeholder="Example: A primitive is a foundational operation that can be meaningfully distinguished from other operations and contributes to multiple observable capabilities."></textarea></div>
+          <div class="field"><label for="reviewNotes">Review notes / disagreements</label><textarea id="reviewNotes" placeholder="Record overlaps, possible splits, missing functions, or questions..."></textarea></div>
+          <div class="footer-actions"><button class="btn primary" id="saveReview">Save review notes</button><button class="btn" id="exportReview">Export review</button></div>
+          <div id="saveStatus" class="empty" aria-live="polite">Changes are stored in this browser only.</div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <div class="eyebrow">Open foundational question</div><h3>Mechanism or observable ability?</h3>
+          <p>Should primitives represent underlying cognitive mechanisms, or the most basic capabilities we can observe in behavior?</p>
+          <div class="field"><label for="foundationChoice">Current position</label><select id="foundationChoice"><option value="">Not decided</option><option>Underlying cognitive mechanisms</option><option>Observable human capabilities</option><option>Hybrid model</option></select></div>
+          <div class="notice">Recommended discussion point: define the primitive boundary before expanding the taxonomy. The Lab page uses a hybrid model: mechanisms organise the taxonomy, observable tasks provide the evidence.</div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Additional functions to classify</div><h3>Where do these belong?</h3><p>They may be primitives, cross-cutting functions, or composite processes.</p>
+          <div class="list" id="additionalList"></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Phase 1 deliverables</div><h3>Exit criteria</h3>
+          <div class="stack" id="deliverables">
+            <label class="operation"><input type="checkbox" data-deliverable="criteria"><span><strong>Primitive inclusion criteria</strong><small>A clear rule for what counts as foundational.</small></span></label>
+            <label class="operation"><input type="checkbox" data-deliverable="groups"><span><strong>Reviewed core groups</strong><small>Each group has a decision and rationale.</small></span></label>
+            <label class="operation"><input type="checkbox" data-deliverable="additional"><span><strong>Additional functions classified</strong><small>Learning, prediction, simulation, inhibition, metacognition, association.</small></span></label>
+            <label class="operation"><input type="checkbox" data-deliverable="gaps"><span><strong>Missing primitives identified</strong><small>Known gaps and unresolved overlaps are documented.</small></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="lab">
+    <div class="eyebrow">Lab / Task 01 · Working memory</div>
+    <div class="phase-head">
+      <div><h1 style="font-size:42px">N-back ladder</h1><p>One task, twelve levels, from the easiest measurable setting to one that is designed to be beyond typical human performance. Pick a level, practise with feedback, then run a recorded block.</p></div>
+      <div class="progress-wrap"><div class="progress-label"><span id="labProgText">0 of 12 mastered</span></div><div class="progress"><i id="labProgBar"></i></div></div>
+    </div>
+    <div class="lab-grid">
+      <div class="stack">
+        <div class="card" id="labCard"></div>
+        <div class="notice"><b>Read before interpreting a score</b>
+          <ul>
+            <li>One task cannot separate working memory from attention or speed. The construct map is a hypothesis, not a result.</li>
+            <li>Scores rise with repetition because you learn the task. Compare yourself with your own first block, not with other people.</li>
+            <li>A block with a few targets is noisy. Treat a single block as a hint; three blocks per level is a better basis.</li>
+            <li>This is not a diagnostic or clinical tool.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><div class="eyebrow">Difficulty ladder</div><h3>Easiest measurable → impossible</h3><p>Levels are not locked. The ▶ marker suggests the first level you have not yet mastered.</p><div class="ladder" id="ladder"></div></div>
+        <div class="card"><div class="eyebrow">Construct map · hypothesis</div><h3>What this task may measure</h3><p>Weights are informed guesses to be tested in Phase 5, not estimates.</p><div class="links" id="linkList"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="profile">
+    <div class="eyebrow">Profile / Working memory</div>
+    <div class="phase-head">
+      <div><h1 style="font-size:42px">Your N-back profile</h1><p>Evidence by level, with uncertainty shown. Unassessed levels stay unassessed; they are not treated as low scores.</p></div>
+    </div>
+    <div id="profileBody"></div>
+  </section>
+</main>
+</div>
+<script>
+/*LOGIC-START*/
+const LETTERS=['C','H','K','L','Q','R','S','T'];
+const MATCH_P=.3, MASTER=2.0, DEV=1.0, SCORED=30, PRACTICE=14;
+const LEVELS=[
+ {id:1,tier:'Easy',n:0,dual:false,ms:2500,lure:0},
+ {id:2,tier:'Easy',n:1,dual:false,ms:2500,lure:0},
+ {id:3,tier:'Moderate',n:2,dual:false,ms:2500,lure:0},
+ {id:4,tier:'Moderate',n:2,dual:false,ms:2000,lure:.2},
+ {id:5,tier:'Hard',n:3,dual:false,ms:2500,lure:.15},
+ {id:6,tier:'Hard',n:3,dual:false,ms:2000,lure:.25},
+ {id:7,tier:'Hard',n:4,dual:false,ms:2000,lure:.25},
+ {id:8,tier:'Very hard',n:2,dual:true,ms:2500,lure:.15},
+ {id:9,tier:'Very hard',n:3,dual:true,ms:2500,lure:.2},
+ {id:10,tier:'Extreme',n:3,dual:true,ms:2000,lure:.25},
+ {id:11,tier:'Extreme',n:5,dual:true,ms:1800,lure:.3},
+ {id:12,tier:'Impossible',n:7,dual:true,ms:1000,lure:.4}
+];
+const nameOf=l=>(l.dual?'Dual ':'')+l.n+'-back';
+const stimMs=l=>Math.min(700,Math.round(l.ms*.5));
+function rng(seed){let a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+function probit(p){
+ const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+ const b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+ const c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+ const d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+ const pl=.02425,ph=1-pl;let q,r;
+ if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+ if(p<=ph){q=p-.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)}
+ q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+}
+/* log-linear corrected signal detection: avoids infinite d' at 0% / 100% */
+function sdt(h,T,f,F){const hr=(h+.5)/(T+1),fr=(f+.5)/(F+1),z1=probit(hr),z2=probit(fr);return{d:z1-z2,c:-(z1+z2)/2}}
+function genStream(L,scored,rnd,poolSize){
+ const n=L.n,N=n+scored,vals=new Array(N),kinds=new Array(N).fill('W');
+ const pick=ex=>{let v;do{v=Math.floor(rnd()*poolSize)}while(ex.includes(v));return v};
+ const K=Math.round(MATCH_P*scored);
+ if(n===0){
+  const target=Math.floor(rnd()*poolSize);
+  const set=new Set(shuffle([...Array(N).keys()],rnd).slice(0,K));
+  for(let i=0;i<N;i++){if(set.has(i)){vals[i]=target;kinds[i]='T'}else{vals[i]=pick([target]);kinds[i]='F'}}
+  return{vals,kinds,target};
+ }
+ for(let i=0;i<n;i++)vals[i]=Math.floor(rnd()*poolSize);
+ const slots=shuffle([...Array(scored).keys()].map(k=>k+n),rnd);
+ const M=Math.round(L.lure*(scored-K));
+ const tSet=new Set(slots.slice(0,K)),lSet=new Set(slots.slice(K,K+M));
+ for(let i=n;i<N;i++){
+  const base=vals[i-n];
+  if(tSet.has(i)){vals[i]=base;kinds[i]='T';continue}
+  if(lSet.has(i)){
+   const c=[];
+   if(i-n-1>=0&&vals[i-n-1]!==base)c.push(vals[i-n-1]);
+   if(n>=2&&vals[i-n+1]!==base)c.push(vals[i-n+1]);
+   if(c.length){vals[i]=c[Math.floor(rnd()*c.length)];kinds[i]='L';continue}
+  }
+  vals[i]=pick([base]);kinds[i]='F';
+ }
+ return{vals,kinds,target:null};
+}
+function genSequence(L,scored,seed){
+ const r=rng(seed),N=L.n+scored;
+ const letter=genStream(L,scored,r,LETTERS.length);
+ const pos=L.dual?genStream(L,scored,r,8):null;
+ const trials=[];for(let i=0;i<N;i++)trials.push({letter:LETTERS[letter.vals[i]],pos:pos?pos.vals[i]:null});
+ return{n:L.n,N,letter,pos,trials};
+}
+function isTarget(seq,i,m){
+ const s=seq[m];if(!s||i<seq.n)return null;
+ return seq.n===0?s.vals[i]===s.target:s.vals[i]===s.vals[i-seq.n];
+}
+/* resp[i] = {letter:rtMs|null, pos:rtMs|null} */
+function score(L,seq,resp){
+ const mods=L.dual?['letter','pos']:['letter'];
+ const out={mods:{},lureTrials:0,lureFAs:0,totalResp:0};const ds=[],rts=[];
+ for(const m of mods){
+  let hit=0,miss=0,fa=0,cr=0,T=0,F=0;const r=[];
+  for(let i=seq.n;i<seq.N;i++){
+   const t=isTarget(seq,i,m),rt=(resp[i]&&resp[i][m]!=null)?resp[i][m]:null,lure=seq[m].kinds[i]==='L';
+   if(rt!=null)out.totalResp++;
+   if(t){T++;if(rt!=null){hit++;r.push(rt)}else miss++}
+   else{F++;if(lure)out.lureTrials++;if(rt!=null){fa++;if(lure)out.lureFAs++}else cr++}
+  }
+  const s=sdt(hit,T,fa,F);
+  out.mods[m]={targets:T,nonTargets:F,hits:hit,misses:miss,fas:fa,crs:cr,hr:hit/T,far:fa/F,d:s.d,c:s.c,rt:mean(r)};
+  ds.push(s.d);rts.push(...r);
+ }
+ out.dprime=mean(ds);out.rt=mean(rts);return out;
+}
+function validate(sc,L,timing){
+ const flags=[];let valid=true;
+ if(sc.totalResp===0){valid=false;flags.push('no_responses')}
+ if(timing&&timing.max>300){valid=false;flags.push('timing_invalid')}
+ else if(timing&&(timing.mean>40||timing.max>120))flags.push('timing_warning');
+ for(const m in sc.mods){const x=sc.mods[m];
+  if(x.far>=.7&&x.hr>=.7)flags.push('press_all_'+m);
+  if(L.dual&&x.hits+x.fas===0&&sc.totalResp>0)flags.push('ignored_'+m);
+ }
+ return{valid,flags};
+}
+function flagText(f){
+ if(f==='no_responses')return'No responses were made, so this block cannot be scored. It is not counted as low ability.';
+ if(f==='timing_invalid')return'The browser delayed stimulus timing by more than 300 ms (background tab or heavy load). Block discarded as evidence.';
+ if(f==='timing_warning')return'Timing was somewhat unstable on this device. d′ is still usable; reaction times are less reliable.';
+ if(f.indexOf('press_all_')===0)return'Almost everything was answered as a match on the '+(f.slice(10)==='pos'?'position':'letter')+' channel. d′ then reflects no discrimination.';
+ if(f.indexOf('ignored_')===0)return'The '+(f.slice(8)==='pos'?'position':'letter')+' channel received no responses, which pulls the dual-task score down.';
+ return f;
+}
+function levelStats(blocks,id){
+ const v=blocks.filter(b=>b.levelId===id&&b.valid&&b.mode==='assessment').sort((a,b)=>a.ts<b.ts?-1:1);
+ if(!v.length)return{status:'Unassessed',n:0};
+ const md=mean(v.slice(-3).map(b=>b.dprime));
+ return{status:md>=MASTER?'Mastered':md>=DEV?'Developing':'Not yet',n:v.length,meanD:md,first:v[0].dprime,latest:v[v.length-1].dprime,evidence:v.length>=3?'Better':v.length===2?'Moderate':'Low'};
+}
+function suggestedLevel(blocks){for(const l of LEVELS){if(levelStats(blocks,l.id).status!=='Mastered')return l.id}return 12}
+function statusOf(d){return d>=MASTER?'Mastered':d>=DEV?'Developing':'Not yet'}
+function recommend(L,sc,valid){
+ if(!valid)return{text:'This block could not be counted as evidence (see flags). Nothing here is treated as low ability. Try again when you can focus on this tab.',next:L.id};
+ const d=sc.dprime;
+ if(d>=MASTER)return L.id<12?{text:'Strong discrimination. Next: Level '+(L.id+1)+'.',next:L.id+1}:{text:'Level 12 is designed to be beyond typical performance. Repeat to confirm: one block at this level is very noisy.',next:12};
+ if(d>=DEV)return{text:'Above chance but not yet stable. Repeat this level; more blocks give better evidence.',next:L.id};
+ if(L.id>1)return{text:'Close to chance. Step down to Level '+(L.id-1)+' to find where performance is reliable.',next:L.id-1};
+ return{text:'Close to chance even at Level 1. Check the instructions, your input device and your attention before drawing any conclusion.',next:1};
+}
+/*LOGIC-END*/
+
+const LINKS=[
+ {cap:'Working memory › Information manipulation',w:'0.8',kind:'primary',note:'Items must be held and compared with the one n steps back.'},
+ {cap:'Working memory › Mental updating',w:'0.8',kind:'primary',note:'The window slides every trial: old items drop out, new ones enter.'},
+ {cap:'Attention › Sustained attention',w:'0.4',kind:'secondary',note:'A block needs 40–90 s of continuous monitoring.'},
+ {cap:'Inhibition › Cognitive inhibition',w:'0.3',kind:'secondary',note:'Lure trials (n±1 matches) require rejecting items that feel familiar. Only informative at levels that include lures.'},
+ {cap:'Information processing › Cognitive speed',w:'0.3',kind:'secondary',note:'Grows in importance at levels with 2 s or less per item.'},
+ {cap:'Execution › Response speed',w:'0.1',kind:'confound',note:'Keypress speed and device latency mainly affect reaction time, less so d′.'},
+ {cap:'Strategy (rehearsal, chunking, position tricks)',w:'n/a',kind:'confound',note:'Different strategies change what the score reflects.'},
+ {cap:'Motivation, fatigue, practice effect',w:'n/a',kind:'confound',note:'Handled by baseline comparison, repeated blocks and validity flags, not removed.'}
+];
+
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const core=[
+ ["Perception","Receiving and discriminating information from sensory input.","Visual recognition, auditory recognition, spatial awareness"],
+ ["Attention","Selecting, sustaining, and shifting processing resources.","Selective, sustained, divided attention"],
+ ["Memory","Encoding, retaining, and retrieving information.","Working, episodic, semantic, procedural memory"],
+ ["Information Processing","Transforming, integrating, and representing information.","Abstraction, information integration, cognitive speed"],
+ ["Reasoning","Drawing and evaluating inferences from available information.","Deductive, inductive, analogical, causal reasoning"],
+ ["Decision Making","Evaluating alternatives and selecting a course of action.","Risk assessment, prioritization, resource allocation"],
+ ["Execution","Translating intentions into controlled actions.","Coordination, precision, response speed, sequencing"],
+ ["Adaptation","Adjusting behavior or strategy as conditions change.","Error correction, flexibility, transfer learning"]
+];
+const additional=["Learning","Prediction","Simulation","Inhibition","Metacognition","Association"];
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}};
+const reviewed=new Set(JSON.parse(ls.get("hcct-reviewed","[]")));
+
+/* ---------- Phase 1 (unchanged behaviour) ---------- */
+function render(){
+ $("#coreCards").innerHTML=core.map((x,i)=>`<article class="card"><div class="num">0${i+1}</div><h3>${x[0]}</h3><p>${x[1]}</p></article>`).join("");
+ $("#operationList").innerHTML=core.map((x,i)=>`<label class="operation"><input type="checkbox" data-review="${i}" ${reviewed.has(i)?"checked":""}><span><strong>${x[0]}</strong><small>${x[1]} Examples: ${x[2]}.</small></span><span class="tag">${reviewed.has(i)?"Reviewed":"Candidate"}</span></label>`).join("");
+ $("#additionalList").innerHTML=additional.map(x=>`<div class="question"><b>${x}</b><p>Classify as primitive, cross-cutting function, composite process, or unresolved.</p></div>`).join("");
+ updateProgress();
+}
+function updateProgress(){const n=reviewed.size;$("#progressText").textContent=`${n} of 8 reviewed`;$("#progressBar").style.width=(n/8*100)+"%"}
+document.addEventListener("change",e=>{
+ if(e.target.matches("[data-review]")){const n=Number(e.target.dataset.review);e.target.checked?reviewed.add(n):reviewed.delete(n);ls.set("hcct-reviewed",JSON.stringify([...reviewed]));render()}
+ if(e.target.matches("[data-deliverable]")){const vals=JSON.parse(ls.get("hcct-deliverables","{}"));vals[e.target.dataset.deliverable]=e.target.checked;ls.set("hcct-deliverables",JSON.stringify(vals))}
+ if(e.target.id==="foundationChoice")ls.set("hcct-foundation",e.target.value);
+});
+function restore(){
+ $("#primitiveRule").value=ls.get("hcct-rule","");
+ $("#reviewNotes").value=ls.get("hcct-notes","");
+ $("#foundationChoice").value=ls.get("hcct-foundation","");
+ const vals=JSON.parse(ls.get("hcct-deliverables","{}"));
+ $$("[data-deliverable]").forEach(e=>e.checked=!!vals[e.dataset.deliverable]);
+}
+$("#saveReview").addEventListener("click",()=>{ls.set("hcct-rule",$("#primitiveRule").value);ls.set("hcct-notes",$("#reviewNotes").value);$("#saveStatus").textContent="Saved locally in this browser."});
+function exportText(){
+ const lines=["# HCCT — Phase 1 Review","",`Reviewed core groups: ${reviewed.size}/8`,"","## Primitive inclusion criterion",$("#primitiveRule").value||"_Not defined_","","## Foundational position",$("#foundationChoice").value||"_Undecided_","","## Review notes",$("#reviewNotes").value||"_No notes yet_","","## Core group status",...core.map((x,i)=>`- [${reviewed.has(i)?"x":" "}] ${x[0]} — ${x[1]}`),"","## Phase 1 deliverables",...$$("[data-deliverable]").map(e=>`- [${e.checked?"x":" "}] ${e.parentElement.querySelector("strong").textContent}`)];
+ return lines.join("\n");
+}
+function download(name,data,type){const blob=new Blob([data],{type});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+$("#exportReview").addEventListener("click",()=>download("HCCT-Phase-1-Review.md",exportText(),"text/markdown"));
+$("#downloadNotes").addEventListener("click",()=>download("HCCT-About-and-Phase-1.md",`# Human Cognitive Capability Taxonomy (HCCT)\n\n## About\nAn exploratory framework for mapping the capabilities humans use to perceive, process, remember, reason, decide, act, learn, and adapt.\n\n## Working definition\nHuman cognitive capability is the set of mental and behavioral capabilities through which a person receives and interprets stimuli, transforms information, evaluates situations, makes decisions, executes actions, learns, and adapts.\n\n## Phase 1 — Primitive review\nReview these candidate groups:\n${core.map(x=>"- **"+x[0]+"** — "+x[1]+" Examples: "+x[2]+".").join("\n")}\n\nAdditional functions to classify: ${additional.join(", ")}.\n\n## Lab\nv0.2 adds a 12-level n-back ladder (working memory) scored with d-prime.\n\n## Methodological note\nHCCT is conceptual and exploratory. It is not a validated psychological test.\n`,"text/markdown"));
+
+/* ---------- Navigation ---------- */
+function showPage(name){
+ if(S&&!S.done&&name!=="lab")abortBlock("You left the Lab page.");
+ $$(".page").forEach(p=>p.classList.toggle("active",p.id===name));
+ $$(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ if(name==="lab")renderLab();
+ if(name==="profile")renderProfile();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+$$("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+$$("[data-go]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.go)));
+
+/* ---------- N-back lab ---------- */
+const store={get(){try{return JSON.parse(localStorage.getItem("hcct-nback-blocks")||"[]")}catch(e){return[]}},set(v){return ls.set("hcct-nback-blocks",JSON.stringify(v))}};
+let curLevel=1,S=null;const DEV_INFO={hz:null};
+const CELLS=[0,1,2,3,5,6,7,8];
+function measureHz(){return new Promise(res=>{let n=0,t0=null;function f(t){if(t0===null)t0=t;n++;if(n>=40)res(Math.round(1000/((t-t0)/(n-1))));else requestAnimationFrame(f)}requestAnimationFrame(f);setTimeout(()=>res(null),2500)})}
+measureHz().then(h=>{DEV_INFO.hz=h});
+const stCls=s=>({Mastered:"mastered",Developing:"developing","Not yet":"notyet"}[s]||"");
+
+function ruleText(L){
+ if(L.n===0)return"A target letter is shown at the start. Press <b>L</b> (or Space) every time that letter appears.";
+ const step=L.n===1?"1 step back":L.n+" steps back";
+ if(!L.dual)return`Letters appear one at a time. Press <b>L</b> (or Space) when the letter is the same as the one <b>${step}</b>.`;
+ return`Each item is a letter in a grid position. Press <b>A</b> if the <b>position</b> matches the one ${step}. Press <b>L</b> if the <b>letter</b> matches the one ${step}. The two are judged independently: both, one or neither may match.`;
+}
+function renderLab(){
+ const blocks=store.get(),sug=suggestedLevel(blocks);
+ const stats=LEVELS.map(l=>levelStats(blocks,l.id));
+ const nM=stats.filter(s=>s.status==="Mastered").length;
+ $("#labProgText").textContent=`${nM} of 12 mastered`;$("#labProgBar").style.width=(nM/12*100)+"%";
+ const running=S&&!S.done;
+ $("#ladder").classList.toggle("locked",!!running);
+ $("#ladder").innerHTML=LEVELS.map((l,i)=>`<div class="lv ${l.id===curLevel?"sel":""}" data-level="${l.id}" data-tier="${l.tier}" role="button" tabindex="0"><b>L${l.id}</b><span class="lvmain"><strong>${nameOf(l)}${l.id===sug?" ▶":""}</strong><small>${l.tier} · ${(l.ms/1000).toFixed(1)}s per item${l.lure?` · lures ${Math.round(l.lure*100)}%`:""}</small></span><span class="st ${stCls(stats[i].status)}">${stats[i].status}</span></div>`).join("");
+ $("#linkList").innerHTML=LINKS.map(x=>`<div class="link ${x.kind==="confound"?"conf":""}"><span class="w">${x.w}<br><small>${x.kind}</small></span><div><strong>${x.cap}</strong><span>${x.note}</span></div></div>`).join("");
+ if(!running&&!(S&&S.showingResult))renderIdle();
+}
+function renderIdle(){
+ const L=LEVELS[curLevel-1];
+ $("#labCard").innerHTML=`<div class="eyebrow">Level ${L.id} · ${L.tier}</div><h2>${nameOf(L)}</h2><p>${ruleText(L)}</p>
+ <div class="metrics">
+  <div class="metric"><small>Memory load</small><b>${L.n===0?"Target only":L.n+" back"}</b></div>
+  <div class="metric"><small>Pace</small><b>${(L.ms/1000).toFixed(1)} s / item</b></div>
+  <div class="metric"><small>Channels</small><b>${L.dual?"Letter + position":"Letter"}</b></div>
+  <div class="metric"><small>Lure rate</small><b>${L.lure?Math.round(L.lure*100)+"%":"None"}</b></div>
+  <div class="metric"><small>Scored trials</small><b>${SCORED}${L.n?` (+${L.n} warm-up)`:""}</b></div>
+  <div class="metric"><small>Targets</small><b>~${Math.round(MATCH_P*100)}% per channel</b></div>
+ </div>
+ ${L.tier==="Impossible"?`<div class="flag">Level 12 is designed to sit beyond typical unaided human performance, so it can reveal your ceiling. It is not a pass mark, and "impossible" here means very unlikely, not proven impossible.</div>`:""}
+ <div class="footer-actions"><button class="btn" data-act="practice">Practice · with feedback</button><button class="btn primary" data-act="assess">Start recorded block</button></div>
+ <p class="empty">Use a keyboard if you can. Stay on this tab, as switching away cancels the block. Practice is never recorded.</p>`;
+}
+function renderRunning(){
+ const L=S.L;
+ const cells=[...Array(9).keys()].map(i=>`<div class="cell ${i===4?"center":""}" data-cell="${i}"></div>`).join("");
+ $("#labCard").innerHTML=`<div class="runhead"><span class="tag">${S.mode==="practice"?"PRACTICE · feedback on · not recorded":"RECORDED · no feedback"}</span><span id="trialText" class="progress-label">Get ready</span></div>
+ <div class="stage">
+  <div class="targetbox">${L.n===0?`Target letter <b>${LETTERS[S.seq.letter.target]}</b>`:`Compare with <b>${L.n}</b> back`}</div>
+  <div class="nb-grid ${L.dual?"":"single"}">${cells}</div>
+  <div class="resp">${L.dual?`<button class="rbtn" data-resp="pos">Position match<small>A</small></button>`:""}<button class="rbtn" data-resp="letter">Letter match<small>L${L.dual?"":" / Space"}</small></button></div>
+  <div id="runMsg" class="empty"></div>
+  <button class="btn" data-act="abort">Stop block</button>
+ </div>`;
+}
+const setMsg=t=>{const e=$("#runMsg");if(e)e.textContent=t};
+
+function startBlock(mode){
+ if(S&&!S.done)return;
+ const L=LEVELS[curLevel-1],scored=mode==="practice"?PRACTICE:SCORED,seed=(Math.random()*4294967296)>>>0;
+ const seq=genSequence(L,scored,seed);
+ S={L,mode,seq,k:-1,onset:[],resp:Array.from({length:seq.N},()=>({letter:null,pos:null})),drifts:[],seed,t0:0,timer:null,hide:null,done:false};
+ renderRunning();renderLab();
+ countdown(3);
+}
+function countdown(c){
+ if(!S||S.done)return;
+ if(c===0){S.t0=performance.now()+60;S.timer=setTimeout(()=>runTrial(0),60);return}
+ setMsg(`Starting in ${c}…`);S.timer=setTimeout(()=>countdown(c-1),1000);
+}
+function feedbackText(k){
+ const out=[];
+ for(const m of(S.L.dual?["letter","pos"]:["letter"])){
+  const t=isTarget(S.seq,k,m);
+  if(t&&S.resp[k][m]==null)out.push("Missed a "+(m==="pos"?"position":"letter")+" match");
+ }
+ return out.join(" · ");
+}
+function runTrial(k){
+ if(!S||S.done)return;
+ const fb=(S.mode==="practice"&&k>0)?feedbackText(k-1):"";
+ if(k>=S.seq.N)return finishBlock();
+ const now=performance.now();S.k=k;S.onset[k]=now;S.drifts.push(Math.abs(now-(S.t0+k*S.L.ms)));
+ $$(".rbtn").forEach(b=>b.classList.remove("pressed","ok","bad"));
+ showStim(k);setMsg(fb);
+ const tt=$("#trialText");if(tt)tt.textContent=`Trial ${k+1} / ${S.seq.N}`;
+ S.hide=setTimeout(hideStim,stimMs(S.L));
+ S.timer=setTimeout(()=>runTrial(k+1),Math.max(0,S.t0+(k+1)*S.L.ms-performance.now()));
+}
+function showStim(k){
+ hideStim();const tr=S.seq.trials[k],idx=S.L.dual?CELLS[tr.pos]:4,c=$(`[data-cell="${idx}"]`);
+ if(c){c.textContent=tr.letter;c.classList.add("on")}
+}
+function hideStim(){$$(".cell").forEach(c=>{c.textContent="";c.classList.remove("on")})}
+function respond(mod){
+ if(!S||S.done||S.k<0||S.k>=S.seq.N)return;
+ if(mod==="pos"&&!S.L.dual)return;
+ const r=S.resp[S.k];if(r[mod]!=null)return;
+ r[mod]=performance.now()-S.onset[S.k];
+ const b=$(`[data-resp="${mod}"]`);
+ if(b){b.classList.add("pressed");
+  if(S.mode==="practice"){const t=isTarget(S.seq,S.k,mod);if(t!==null){b.classList.remove("pressed");b.classList.add(t?"ok":"bad")}}}
+}
+document.addEventListener("keydown",e=>{
+ if(!S||S.done||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;
+ const k=e.key.toLowerCase();
+ if(k==="l"||(k===" "&&!S.L.dual)){e.preventDefault();respond("letter")}
+ else if(k==="a"&&S.L.dual){e.preventDefault();respond("pos")}
+});
+document.addEventListener("keyup",e=>{if(S&&!S.done&&e.key===" ")e.preventDefault()});
+document.addEventListener("mousedown",e=>{if(e.target.closest("[data-resp]"))e.preventDefault()});
+document.addEventListener("pointerdown",e=>{const b=e.target.closest("[data-resp]");if(b)respond(b.dataset.resp)});
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&S&&!S.done)abortBlock("The tab was hidden, so timing could not be trusted.")});
+
+function clearTimers(){if(S){clearTimeout(S.timer);clearTimeout(S.hide)}}
+function abortBlock(reason){
+ if(!S||S.done)return;
+ clearTimers();S.done=true;S.showingResult=true;
+ const el=$("#labCard");
+ if(el)el.innerHTML=`<div class="eyebrow">Block not recorded</div><h2>Stopped</h2><p>${reason||"You stopped the block."} Nothing was saved and nothing was counted as low ability.</p><div class="footer-actions"><button class="btn primary" data-act="again">Back to level ${curLevel}</button></div>`;
+ renderLab();
+}
+function finishBlock(){
+ clearTimers();S.done=true;S.showingResult=true;
+ const L=S.L,sc=score(L,S.seq,S.resp);
+ if(S.mode==="practice"){renderResult(sc,{L,practice:true,valid:true,flags:[]});renderLab();return}
+ const timing={mean:mean(S.drifts),max:Math.max(...S.drifts)};
+ const v=validate(sc,L,timing);
+ const rec={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ts:new Date().toISOString(),levelId:L.id,n:L.n,dual:L.dual,ms:L.ms,mode:"assessment",seed:S.seed,scored:SCORED,
+  valid:v.valid,flags:v.flags,dprime:sc.dprime,rt:sc.rt,mods:sc.mods,lureTrials:sc.lureTrials,lureFAs:sc.lureFAs,timing,
+  device:{hz:DEV_INFO.hz,dpr:window.devicePixelRatio,w:innerWidth,h:innerHeight,touch:"ontouchstart" in window,ua:navigator.userAgent.slice(0,140)}};
+ const all=store.get();all.push(rec);const ok=store.set(all);
+ renderResult(sc,{L,practice:false,valid:v.valid,flags:v.flags,saved:ok});renderLab();
+}
+function renderResult(sc,info){
+ const L=info.L,rec=recommend(L,sc,info.valid),pct=x=>Math.round(x*100)+"%";
+ const status=info.valid?statusOf(sc.dprime):"Not scored";
+ S.nextLevel=info.practice?L.id:rec.next;
+ const mods=Object.keys(sc.mods).map(m=>{const x=sc.mods[m];return`<div class="metric"><small>${m==="pos"?"Position":"Letter"} · hits / false alarms</small><b>${x.hits}/${x.targets} · ${x.fas}/${x.nonTargets}</b><small>d′ ${x.d.toFixed(2)}${x.rt?` · ${Math.round(x.rt)} ms`:""}</small></div>`}).join("");
+ $("#labCard").innerHTML=`<div class="eyebrow">${info.practice?"Practice result · not recorded":"Block result · recorded"} · Level ${L.id} ${nameOf(L)}</div>
+ <div style="display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin:10px 0"><div><small class="progress-label">d′ (sensitivity)</small><div class="big">${info.valid?sc.dprime.toFixed(2):"—"}</div></div><span class="st ${stCls(status)}">${status}</span></div>
+ <div class="metrics">${mods}<div class="metric"><small>Lure false alarms</small><b>${L.lure?sc.lureFAs+" / "+sc.lureTrials:"n/a"}</b></div></div>
+ ${info.flags.map(f=>`<div class="flag">${flagText(f)}</div>`).join("")}
+ <p>${info.practice?"Practice scores are not stored. When you are ready, start a recorded block.":rec.text}</p>
+ ${info.saved===false?`<div class="flag">Browser storage was unavailable, so this block could not be saved.</div>`:""}
+ <p class="empty">d′ of about 0 means chance, 1 means some real discrimination, 2 or more means strong discrimination. A block has only about ${Math.round(MATCH_P*SCORED)} targets per channel, so expect roughly ±0.5 of noise.</p>
+ <div class="footer-actions"><button class="btn primary" data-act="again">${info.practice?"Back to level":"Run another block"}</button>${(!info.practice&&rec.next!==L.id)?`<button class="btn" data-act="next">Go to Level ${rec.next}</button>`:""}<button class="btn" data-go-profile="1">View profile</button></div>`;
+}
+
+document.addEventListener("click",e=>{
+ const lv=e.target.closest("[data-level]");
+ if(lv&&!(S&&!S.done)){curLevel=Number(lv.dataset.level);if(S)S.showingResult=false;renderLab();renderIdle();return}
+ const a=e.target.closest("[data-act]");
+ if(a){
+  const act=a.dataset.act;
+  if(act==="practice")startBlock("practice");
+  if(act==="assess")startBlock("assessment");
+  if(act==="abort")abortBlock("You stopped the block.");
+  if(act==="again"){if(S)S.showingResult=false;renderLab();renderIdle()}
+  if(act==="next"){if(S){curLevel=S.nextLevel||curLevel;S.showingResult=false}renderLab();renderIdle()}
+  if(act==="export-json")download("HCCT-nback-data.json",JSON.stringify(store.get(),null,2),"application/json");
+  if(act==="export-csv")download("HCCT-nback-data.csv",toCSV(store.get()),"text/csv");
+  if(act==="clear"){if(confirm("Delete all recorded n-back blocks from this browser?")){store.set([]);renderProfile()}}
+ }
+ if(e.target.closest("[data-go-profile]"))showPage("profile");
+});
+document.addEventListener("keydown",e=>{const lv=e.target.closest&&e.target.closest("[data-level]");if(lv&&(e.key==="Enter"||e.key===" ")&&!(S&&!S.done)){e.preventDefault();lv.click()}});
+
+/* ---------- Profile ---------- */
+function toCSV(rows){
+ const cols=["ts","levelId","n","dual","ms","seed","valid","flags","dprime","dLetter","dPos","rt","lureFAs","lureTrials","hz"];
+ const q=v=>{v=v==null?"":String(v);return/[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+ return[cols.join(",")].concat(rows.map(b=>[b.ts,b.levelId,b.n,b.dual,b.ms,b.seed,b.valid,(b.flags||[]).join("|"),b.dprime,b.mods&&b.mods.letter?b.mods.letter.d:"",b.mods&&b.mods.pos?b.mods.pos.d:"",b.rt,b.lureFAs,b.lureTrials,b.device?b.device.hz:""].map(q).join(","))).join("\n");
+}
+function chartSVG(stats){
+ const W=720,H=230,l=34,r=10,t=14,bt=30,iw=W-l-r,ih=H-t-bt,max=4,bw=iw/12;
+ const y=v=>t+ih-(Math.max(0,Math.min(max,v))/max)*ih;
+ let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Mean d-prime by level">`;
+ [0,1,2,3,4].forEach(v=>{s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="#293746" ${v===1||v===2?'stroke-dasharray="4 4"':""}/><text x="${l-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
+ s+=`<text x="${W-r}" y="${y(2)-4}" text-anchor="end" style="fill:#8bd3c7">mastered ≥ 2</text><text x="${W-r}" y="${y(1)-4}" text-anchor="end" style="fill:#f2c078">developing ≥ 1</text>`;
+ stats.forEach((st,i)=>{
+  const x=l+i*bw+bw*.2,w=bw*.6;
+  if(st.n){const col=st.status==="Mastered"?"#8bd3c7":st.status==="Developing"?"#f2c078":"#ff9d9d",top=y(st.meanD);
+   s+=`<rect x="${x}" y="${top}" width="${w}" height="${Math.max(1,t+ih-top)}" rx="4" fill="${col}" opacity="${st.n>=3?1:st.n===2?.75:.5}"/>`;
+   s+=`<text x="${x+w/2}" y="${top-4}" text-anchor="middle">${st.meanD.toFixed(1)}</text>`}
+  else s+=`<circle cx="${x+w/2}" cy="${t+ih-3}" r="3" fill="#3b4b5a"/>`;
+  s+=`<text x="${x+w/2}" y="${H-10}" text-anchor="middle">L${i+1}</text>`;
+ });
+ return s+`</svg>`;
+}
+function renderProfile(){
+ const blocks=store.get(),stats=LEVELS.map(l=>levelStats(blocks,l.id));
+ const valid=blocks.filter(b=>b.valid&&b.mode==="assessment"),inval=blocks.length-valid.length;
+ const mastered=stats.map((s,i)=>s.status==="Mastered"?i+1:0).filter(Boolean),top=mastered.length?Math.max(...mastered):null;
+ const sug=suggestedLevel(blocks);
+ if(!blocks.length){
+  $("#profileBody").innerHTML=`<div class="card"><h2>No recorded blocks yet</h2><p>Run a recorded block in the Lab to start building a profile. Until then every level is shown as unassessed, which means unknown, not low.</p><div class="footer-actions"><button class="btn primary" data-go="lab" onclick="showPage('lab')">Open the Lab</button></div></div>`;return;
+ }
+ const rows=LEVELS.map((l,i)=>{const s=stats[i];return`<tr><td>L${l.id}</td><td>${nameOf(l)}<br><small style="color:var(--muted)">${l.tier} · ${(l.ms/1000).toFixed(1)}s</small></td><td>${s.n}</td><td>${s.n?s.first.toFixed(2):"—"}</td><td>${s.n?s.latest.toFixed(2):"—"}</td><td>${s.n?s.meanD.toFixed(2):"—"}</td><td><span class="st ${stCls(s.status)}">${s.status}</span></td><td>${s.n?s.evidence:"—"}</td></tr>`}).join("");
+ const hist=blocks.slice().sort((a,b)=>a.ts<b.ts?1:-1).slice(0,12).map(b=>{const d=new Date(b.ts);return`<tr><td>${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</td><td>L${b.levelId} · ${(b.dual?"Dual ":"")+b.n+"-back"}</td><td>${b.valid?b.dprime.toFixed(2):"—"}</td><td>${b.rt?Math.round(b.rt)+" ms":"—"}</td><td>${b.valid?"Valid":"Not scored"}${(b.flags&&b.flags.length)?` <small style="color:var(--warm)">· ${b.flags.length} flag${b.flags.length>1?"s":""}</small>`:""}</td></tr>`}).join("");
+ const best=top?stats[top-1]:null;
+ $("#profileBody").innerHTML=`
+ <div class="cards4">
+  <div class="card"><small class="progress-label">Highest level mastered</small><div class="big" style="font-size:38px;margin-top:8px">${top?"L"+top:"None yet"}</div><p style="margin-top:8px">${top?nameOf(LEVELS[top-1])+" · evidence: "+best.evidence:"Not the same as low ability: it may simply be untested."}</p></div>
+  <div class="card"><small class="progress-label">Valid recorded blocks</small><div class="big" style="font-size:38px;margin-top:8px">${valid.length}</div><p style="margin-top:8px">${inval?inval+" block"+(inval>1?"s":"")+" not scored (flags)":"No discarded blocks"}</p></div>
+  <div class="card"><small class="progress-label">Suggested next level</small><div class="big" style="font-size:38px;margin-top:8px">L${sug}</div><p style="margin-top:8px">${nameOf(LEVELS[sug-1])}</p></div>
+ </div>
+ <div class="card"><div class="eyebrow">Sensitivity by level</div><h3>Mean d′ of the last three valid blocks per level</h3><p>Bar opacity shows evidence: faint = 1 block, medium = 2, solid = 3 or more. Dots are unassessed levels.</p>${chartSVG(stats)}</div>
+ <div class="card" style="margin-top:14px"><div class="eyebrow">Levels</div><h3>Baseline and trend</h3><p>"First" versus "Latest" shows your own change at that level. Part of any rise is learning the task, not capability.</p><div class="scroll"><table class="table"><thead><tr><th>#</th><th>Level</th><th>Blocks</th><th>First d′</th><th>Latest d′</th><th>Mean (last 3)</th><th>Status</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+ <div class="card" style="margin-top:14px"><div class="eyebrow">Recent blocks</div><div class="scroll"><table class="table"><thead><tr><th>When</th><th>Level</th><th>d′</th><th>Mean RT (hits)</th><th>Validity</th></tr></thead><tbody>${hist}</tbody></table></div></div>
+ <div class="card" style="margin-top:14px"><div class="eyebrow">What this profile can and cannot say</div>
+  <p>A single task supports a statement about performance on this task, not about "working memory" in general. To separate working memory from attention or speed you need at least one more task per neighbouring capability (Phase 3 and 4). Results are exploratory and unvalidated.</p>
+  <div class="footer-actions"><button class="btn" data-act="export-json">Export JSON</button><button class="btn" data-act="export-csv">Export CSV</button><button class="btn" data-act="clear">Clear data</button></div>
+  <p class="empty">Data stays in this browser only. Each record stores the random seed, device pixel ratio, estimated refresh rate and timing drift so a block can be reproduced and checked.</p></div>`;
+}
+
+render();restore();
+</script>
+</body>
+</html>
