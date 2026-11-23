@@ -1,0 +1,162 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10151d">
+  <title>HCCT — Human Cognitive Capability Taxonomy</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/nback-engine.js"></script>
+  <script defer src="js/task-registry.js"></script>
+  <script defer src="js/profile-engine.js"></script>
+  <script defer src="js/app.js"></script>
+  </head>
+  <body>
+  <div class="shell">
+  <aside>
+    <div class="brand"><div class="mark">H</div><div><b>HCCT</b><small>Human Cognitive Capability Taxonomy</small></div></div>
+    <nav aria-label="Workspace">
+      <div class="nav-label">Workspace</div>
+      <div class="nav-row">
+        <button class="nav active" data-page="about"><span>◈</span> About</button>
+        <button class="nav" data-page="registry"><span>▦</span> Task Registry</button>
+        <button class="nav" data-page="phase1"><span>⌘</span> Phase 1 · Primitive review</button>
+        <button class="nav" data-page="lab"><span>◉</span> Lab · N-back ladder</button>
+        <button class="nav" data-page="profile"><span>▤</span> Profile</button>
+      </div>
+    </nav>
+    <div class="side-note"><b style="color:var(--text)">Exploratory framework</b><br>HCCT v0.2 is a working model, not a validated psychological test.</div>
+  </aside>
+  <main>
+    <noscript><div class="notice">JavaScript is required to use the HCCT workspace. Enable JavaScript and reload this page.</div></noscript>
+    <div class="topline"><span>COGNITIVE SYSTEMS / RESEARCH SPACE</span><span class="version">VERSION 0.2</span></div>
+
+    <section class="page active" id="about">
+      <div class="hero">
+        <div class="eyebrow">An evolving taxonomy of human capability</div>
+        <h1>Understand the capabilities behind human decisions.</h1>
+        <p class="lead">HCCT is an exploratory framework for mapping how people perceive, process, remember, reason, decide, act, learn, and adapt across different situations.</p>
+        <div class="hero-actions"><button class="btn primary" data-go="lab">Try the N-back lab →</button><button class="btn" data-go="phase1">Explore Phase 1</button><button class="btn" id="downloadNotes">Download project notes</button></div>
+      </div>
+      <div class="definition">Working definition: Human cognitive capability is the set of mental and behavioral capabilities through which a person receives and interprets stimuli, transforms information, evaluates situations, makes decisions, executes actions, learns, and adapts.</div>
+      <div class="section">
+        <div class="eyebrow">New in v0.2</div><h2>The first measurable task</h2>
+        <p>A twelve-level n-back ladder for working memory, from an easy 0-back to a deliberately impossible dual 7-back. Scoring uses signal detection (d′) rather than raw accuracy, and every block carries validity flags and an evidence rating. Insufficient evidence is shown as <em>unassessed</em>, never as low ability.</p>
+      </div>
+      <div class="section">
+        <div class="eyebrow">Framework architecture</div><h2>From foundational operations to real-world abilities</h2>
+        <p>Start with broad operations, decompose them into observable sub-capabilities, then map how they combine in everyday tasks.</p>
+        <div class="grid">
+          <article class="card"><div class="num">01 / PRIMITIVES</div><h3>Primitive operations</h3><p>Candidate foundational functions such as perception, attention, memory, reasoning, and adaptation.</p></article>
+          <article class="card"><div class="num">02 / COMPONENTS</div><h3>Sub-capabilities</h3><p>More specific capabilities that can be defined and investigated, such as working memory or causal reasoning.</p></article>
+          <article class="card"><div class="num">03 / IN PRACTICE</div><h3>Composite abilities</h3><p>Real-world performance that emerges from multiple capabilities working together, such as tactical decision-making.</p></article>
+        </div>
+      </div>
+      <div class="section">
+        <div class="eyebrow">Initial taxonomy</div><h2>Eight candidate core groups</h2>
+        <div class="grid" id="coreCards"></div>
+      </div>
+      <div class="section">
+        <div class="eyebrow">Design principles</div><h2>How we will keep the model useful</h2>
+        <div class="grid">
+          <article class="card"><h3>Observable</h3><p>Every capability should eventually connect to evidence, behavior, or task performance.</p></article>
+          <article class="card"><h3>Distinct where possible</h3><p>Overlaps are documented rather than hidden. Categories must earn their place.</p></article>
+          <article class="card"><h3>Non-hierarchical</h3><p>No capability is automatically superior. A profile is multidimensional, not a single rank.</p></article>
+        </div>
+      </div>
+      <div class="section"><div class="notice">Important: HCCT is currently conceptual. Its categories, boundaries, and assessment methods have not been scientifically validated.</div></div>
+    </section>
+
+    <section class="page" id="registry">
+      <div class="eyebrow">Workspace / Registered tasks</div>
+      <div class="phase-head">
+        <div><h1 style="font-size:42px">Task Registry</h1><p>Browse the task modules currently available in this workspace. Select a task to open its task card and difficulty ladder in the Lab.</p></div>
+        <div class="progress-wrap"><span id="registryCount" class="progress-label" aria-live="polite"></span></div>
+      </div>
+      <div class="notice">Only tasks that are registered and ready to use appear here. New task modules can be added to the registry independently.</div>
+      <div class="registry-grid" id="taskRegistryList" aria-label="Registered tasks"></div>
+    </section>
+
+    <section class="page" id="phase1">
+      <div class="eyebrow">Development / Phase 01</div>
+      <div class="phase-head">
+        <div><h1 style="font-size:42px">Primitive review</h1><p>Review the proposed foundational operations. Decide what each group means, whether it belongs at this level, and what needs to change.</p></div>
+        <div class="progress-wrap"><div class="progress-label"><span id="progressText">0 of 8 reviewed</span></div><div class="progress"><i id="progressBar"></i></div></div>
+      </div>
+      <div class="workspace">
+        <div class="stack">
+          <div class="card">
+            <div class="eyebrow">Review checklist</div><h2 style="margin-bottom:5px">Candidate core groups</h2><p>Mark a group as reviewed when you have considered its scope. This does not mean it is approved.</p>
+            <div class="stack" id="operationList"></div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Design decision</div><h2>What qualifies as a primitive?</h2>
+            <p>Use this space to record the rule we will apply consistently when reviewing categories.</p>
+            <div class="field"><label for="primitiveRule">Working criterion</label><textarea id="primitiveRule" placeholder="Example: A primitive is a foundational operation that can be meaningfully distinguished from other operations and contributes to multiple observable capabilities."></textarea></div>
+            <div class="field"><label for="reviewNotes">Review notes / disagreements</label><textarea id="reviewNotes" placeholder="Record overlaps, possible splits, missing functions, or questions..."></textarea></div>
+            <div class="footer-actions"><button class="btn primary" id="saveReview">Save review notes</button><button class="btn" id="exportReview">Export review</button></div>
+            <div id="saveStatus" class="empty" aria-live="polite">Changes are stored in this browser only.</div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <div class="eyebrow">Open foundational question</div><h3>Mechanism or observable ability?</h3>
+            <p>Should primitives represent underlying cognitive mechanisms, or the most basic capabilities we can observe in behavior?</p>
+            <div class="field"><label for="foundationChoice">Current position</label><select id="foundationChoice"><option value="">Not decided</option><option>Underlying cognitive mechanisms</option><option>Observable human capabilities</option><option>Hybrid model</option></select></div>
+            <div class="notice">Recommended discussion point: define the primitive boundary before expanding the taxonomy. The Lab page uses a hybrid model: mechanisms organise the taxonomy, observable tasks provide the evidence.</div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Additional functions to classify</div><h3>Where do these belong?</h3><p>They may be primitives, cross-cutting functions, or composite processes.</p>
+            <div class="list" id="additionalList"></div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Phase 1 deliverables</div><h3>Exit criteria</h3>
+            <div class="stack" id="deliverables">
+              <label class="operation"><input type="checkbox" data-deliverable="criteria"><span><strong>Primitive inclusion criteria</strong><small>A clear rule for what counts as foundational.</small></span></label>
+              <label class="operation"><input type="checkbox" data-deliverable="groups"><span><strong>Reviewed core groups</strong><small>Each group has a decision and rationale.</small></span></label>
+              <label class="operation"><input type="checkbox" data-deliverable="additional"><span><strong>Additional functions classified</strong><small>Learning, prediction, simulation, inhibition, metacognition, association.</small></span></label>
+              <label class="operation"><input type="checkbox" data-deliverable="gaps"><span><strong>Missing primitives identified</strong><small>Known gaps and unresolved overlaps are documented.</small></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="lab">
+      <div class="eyebrow">Lab / Task 01 · Working memory</div>
+      <div class="phase-head">
+        <div><h1 style="font-size:42px">N-back ladder</h1><p>One task, twelve levels, from the easiest measurable setting to one that is designed to be beyond typical human performance. Pick a level, practise with feedback, then run a recorded block.</p></div>
+        <div class="progress-wrap"><div class="progress-label"><span id="labProgText">0 of 12 mastered</span></div><div class="progress"><i id="labProgBar"></i></div></div>
+      </div>
+      <div class="field"><label for="taskSelector">Task</label><select id="taskSelector"></select></div>
+      <div id="taskCard"></div>
+      <div class="lab-grid">
+        <div class="stack">
+          <div class="card" id="labCard"></div>
+          <div class="notice"><b>Read before interpreting a score</b>
+            <ul>
+              <li>One task cannot separate working memory from attention or speed. The construct map is a hypothesis, not a result.</li>
+              <li>Scores rise with repetition because you learn the task. Compare yourself with your own first block, not with other people.</li>
+              <li>A block with a few targets is noisy. Treat a single block as a hint; three blocks per level is a better basis.</li>
+              <li>This is not a diagnostic or clinical tool.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card"><div class="eyebrow">Difficulty ladder</div><h3>Easiest measurable → impossible</h3><p>Levels are not locked. The ▶ marker suggests the first level you have not yet mastered.</p><div class="ladder" id="ladder"></div></div>
+          <div class="card"><div class="eyebrow">Construct map · hypothesis</div><h3>What this task may measure</h3><p>Weights are informed guesses to be tested in Phase 5, not estimates.</p><div class="links" id="linkList"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="profile">
+      <div class="eyebrow">Profile / Task evidence</div>
+      <div class="phase-head">
+        <div><h1 style="font-size:42px">Your task profiles</h1><p>Evidence and uncertainty are shown separately for each task. Unassessed levels are unknown, not low scores.</p></div>
+      </div>
+      <div id="profileBody"></div>
+    </section>
+  </main>
+  </div>
+  </body>
+  </html>
