@@ -11,6 +11,10 @@ function load(file) {
 }
 
 load('js/nback-engine.js');
+load('js/task-engine-common.js');
+load('js/flanker-engine.js');
+load('js/switching-engine.js');
+load('js/series-engine.js');
 load('js/task-registry.js');
 load('js/profile-engine.js');
 
@@ -18,9 +22,17 @@ const engine = context.window.HCCTNBackEngine;
 const registry = context.window.HCCTTaskRegistry;
 const profile = context.window.HCCTProfileEngine;
 
-assert.equal(registry.length, 1);
+assert.deepEqual(Array.from(registry, task => task.id), ['nback', 'flanker', 'switching', 'series']);
 assert.equal(registry[0].id, 'nback');
 assert.equal(registry[0].module, engine);
+for (const task of registry) {
+  assert.equal(task.module.id, task.id);
+  assert.equal(task.module.policyType, 'capability');
+  assert.equal(typeof task.module.generate, 'function');
+  assert.equal(typeof task.module.score, 'function');
+  assert.equal(typeof task.module.validate, 'function');
+  assert.equal(typeof task.module.statusPolicy, 'function');
+}
 assert.equal(engine.policyType, 'capability');
 assert.equal(engine.levels.length, 12);
 assert.equal(engine.statusPolicy([]).status, 'Unassessed');

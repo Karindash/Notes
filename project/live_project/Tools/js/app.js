@@ -16,8 +16,8 @@ function getTask(taskId=selectedTaskId){
 function selectTask(taskId){
 const task=getTask(taskId);
 if(!task){console.error(`Task is not registered: ${taskId}`);return false}
-if(S&&!S.done)abortBlock("You changed tasks.");
-selectedTaskId=task.id;$("#taskSelector").value=task.id;curLevel=1;S=null;renderLab();
+if((S&&!S.done)||(G&&!G.done))abortBlock("You changed tasks.");
+selectedTaskId=task.id;$("#taskSelector").value=task.id;curLevel=1;S=null;G=null;renderLab();
 return true;
 }
 
@@ -85,7 +85,7 @@ return true;
 
   /* ---------- Navigation ---------- */
   function showPage(name){
-  if(S&&!S.done&&name!=="lab")abortBlock("You left the Lab page.");
+  if(((S&&!S.done)||(G&&!G.done))&&name!=="lab")abortBlock("You left the Lab page.");
   $$(".page").forEach(p=>p.classList.toggle("active",p.id===name));
   $$(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
   if(name==="registry")renderTaskRegistry();
@@ -118,7 +118,7 @@ return true;
   }
 
   /* ---------- N-back lab ---------- */
-  let curLevel=1,S=null;const DEV_INFO={hz:null};
+  let curLevel=1,S=null,G=null;const DEV_INFO={hz:null};
   const CELLS=[0,1,2,3,5,6,7,8];
   function measureHz(){return new Promise(res=>{let n=0,t0=null;function f(t){if(t0===null)t0=t;n++;if(n>=40)res(Math.round(1000/((t-t0)/(n-1))));else requestAnimationFrame(f)}requestAnimationFrame(f);setTimeout(()=>res(null),2500)})}
   measureHz().then(h=>{DEV_INFO.hz=h});
@@ -130,19 +130,36 @@ return true;
   }
   function renderLab(){
   const task=getTask(),module=task.module,levels=module.levels,blocks=taskStore(task.id).get();
+  if(module.id!=="nback"){
+    $("#labPageEyebrow").textContent=`Lab / ${task.name} · ${module.meta.groups.join(" · ")}`;
+    $("#labHeading").textContent=task.name;
+    $("#labIntroduction").textContent=module.meta.procedure;
+    $("[data-lab-nav-label]").textContent=`Lab · ${task.name}`;
+  }else{
+    $("#labPageEyebrow").textContent="Lab / Task 01 · Working memory";
+    $("#labHeading").textContent="N-back ladder";
+    $("#labIntroduction").textContent="One task, twelve levels, from the easiest measurable setting to one that is designed to be beyond typical human performance. Pick a level, practise with feedback, then run a recorded block.";
+    $("[data-lab-nav-label]").textContent="Lab · N-back ladder";
+  }
   const sug=module.suggestedLevel(blocks);
   const stats=levels.map(l=>module.statusPolicy(blocks.filter(b=>b.levelId===l.id)));
   const nM=stats.filter(s=>s.status==="Mastered").length;
   $("#labProgText").textContent=`${nM} of ${levels.length} mastered`;$("#labProgBar").style.width=(nM/levels.length*100)+"%";
   renderTaskCard(task);
-  const running=S&&!S.done;
+  const running=(S&&!S.done)||(G&&!G.done);
   $("#ladder").classList.toggle("locked",!!running);
-  $("#ladder").innerHTML=levels.map((l,i)=>`<div class="lv ${l.id===curLevel?"sel":""}" data-level="${l.id}" data-tier="${l.tier}" role="button" tabindex="0"><b>L${l.id}</b><span class="lvmain"><strong>${module.nameOf(l)}${l.id===sug?" ▶":""}</strong><small>${l.tier} · ${(l.ms/1000).toFixed(1)}s per item${l.lure?` · lures ${Math.round(l.lure*100)}%`:""}</small></span><span class="st ${stCls(stats[i].status,module.policyType)}">${stats[i].status}</span></div>`).join("");
+  $("#ladder").innerHTML=levels.map((l,i)=>{
+    const detail=module.id==="nback"
+      ? `${l.tier} · ${(l.ms/1000).toFixed(1)}s per item${l.lure?` · lures ${Math.round(l.lure*100)}%`:""}`
+      : module.levelSummary(l);
+    return`<div class="lv ${l.id===curLevel?"sel":""}" data-level="${l.id}" data-tier="${l.tier}" role="button" tabindex="0"><b>L${l.id}</b><span class="lvmain"><strong>${module.nameOf(l)}${l.id===sug?" ▶":""}</strong><small>${detail}</small></span><span class="st ${stCls(stats[i].status,module.policyType)}">${stats[i].status}</span></div>`;
+  }).join("");
   $("#linkList").innerHTML=module.links.map(x=>`<div class="link ${x.kind==="confound"?"conf":""}"><span class="w">${x.weight}<br><small>${x.kind}</small></span><div><strong>${x.capability}</strong><span>${x.note}</span></div></div>`).join("");
-  if(!running&&!(S&&S.showingResult))renderIdle();
+  if(!running&&!((S&&S.showingResult)||(G&&G.showingResult)))renderIdle();
   }
   function renderIdle(){
   const module=getTask().module,L=module.levels[curLevel-1];
+  if(module.id!=="nback")return renderGenericIdle(module,L);
   $("#labCard").innerHTML=`<div class="eyebrow">Level ${L.id} · ${L.tier}</div><h2>${module.nameOf(L)}</h2><p>${module.ruleText(L)}</p>
   <div class="metrics">
     <div class="metric"><small>Memory load</small><b>${L.n===0?"Target only":L.n+" back"}</b></div>
@@ -155,6 +172,32 @@ return true;
   ${L.tier==="Impossible"?`<div class="flag">Level 12 is designed to sit beyond typical unaided human performance, so it can reveal your ceiling. It is not a pass mark, and "impossible" here means very unlikely, not proven impossible.</div>`:""}
   <div class="footer-actions"><button class="btn" data-act="practice">Practice · with feedback</button><button class="btn primary" data-act="assess">Start recorded block</button></div>
   <p class="empty">Use a keyboard if you can. Stay on this tab, as switching away cancels the block. Practice is never recorded.</p>`;
+  }
+  function renderGenericIdle(module,level){
+  const taskCount=module.modeCounts||{};
+  const scored=module.SCORED||module.SCORED_TRIALS||level.scoredTrials||level.itemCount||level.trialCount||taskCount.assessment||module.scoredTrials||module.itemsPerBlock||"";
+  const practice=module.PRACTICE||module.PRACTICE_TRIALS||level.practiceCount||taskCount.practice||"";
+  const count=scored?`${scored} scored${practice?` (+${practice} practice)`:""}`:"See level rules";
+  const duration=level.timeLimitMs||level.responseWindowMs||level.responseWindow||level.windowMs||level.ms||(level.timeSeconds&&level.timeSeconds*1000);
+  const extra=module.id==="flanker"&&level.id>=6
+    ? `<div class="flag">Very short exposures depend on the display refresh rate. Level 10 is designed to be very unlikely to be reliable.</div>`
+    : module.id==="series"&&level.id===10
+      ? `<div class="flag">This level also probes whether you notice when a problem cannot be resolved, not only reasoning. A single block is a rough hint.</div>`
+      : "";
+  $("#labCard").innerHTML=`<div class="eyebrow">Level ${level.id} · ${level.tier}</div>
+    <h2>${module.nameOf(level)}</h2>
+    <p>${module.ruleText(level)}</p>
+    <div class="metrics">
+      <div class="metric"><small>Items per block</small><b>${count}</b></div>
+      <div class="metric"><small>Time per item</small><b>${duration?`${Math.round(duration/1000)} s`:"Self-paced"}</b></div>
+      <div class="metric"><small>Primary metric</small><b>${module.profile.metricName}</b></div>
+    </div>
+    ${extra}
+    <div class="footer-actions">
+      <button class="btn" data-act="practice">Practice · not recorded</button>
+      <button class="btn primary" data-act="assess">Start recorded block</button>
+    </div>
+    <p class="empty">Practice provides feedback and is never saved. Recorded blocks store their seed and timing evidence in this browser.</p>`;
   }
   function renderRunning(){
   const L=S.L;
@@ -171,6 +214,7 @@ return true;
   const setMsg=t=>{const e=$("#runMsg");if(e)e.textContent=t};
 
   function startBlock(mode){
+  if(getTask().module.id!=="nback")return startGenericBlock(mode);
   if(S&&!S.done)return;
   const module=getTask().module,L=module.levels[curLevel-1],seed=(Math.random()*4294967296)>>>0;
   const seq=module.generate(L,seed,mode);
@@ -225,10 +269,19 @@ return true;
   document.addEventListener("keyup",e=>{if(S&&!S.done&&e.key===" ")e.preventDefault()});
   document.addEventListener("mousedown",e=>{if(e.target.closest("[data-resp]"))e.preventDefault()});
   document.addEventListener("pointerdown",e=>{const b=e.target.closest("[data-resp]");if(b)getTask().module.ui.handleInput(b.dataset.resp)});
-  document.addEventListener("visibilitychange",()=>{if(document.hidden&&S&&!S.done)abortBlock("The tab was hidden, so timing could not be trusted.")});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden&&((S&&!S.done)||(G&&!G.done)))abortBlock("The tab was hidden, so timing could not be trusted.")});
 
-  function clearTimers(){if(S){clearTimeout(S.timer);clearTimeout(S.hide)}}
+  function clearTimers(){
+  if(S){clearTimeout(S.timer);clearTimeout(S.hide)}
+  if(G){
+    clearTimeout(G.timer);clearTimeout(G.hideTimer);clearTimeout(G.maskTimer);
+    clearTimeout(G.cueTimer);clearTimeout(G.countdownTimer);
+    if(G.countdownInterval)clearInterval(G.countdownInterval);
+    if(G.frameRequest)cancelAnimationFrame(G.frameRequest);
+  }
+  }
   function abortBlock(reason){
+  if(G&&!G.done)return abortGenericBlock(reason);
   if(!S||S.done)return;
   clearTimers();S.done=true;S.showingResult=true;
   const el=$("#labCard");
@@ -262,31 +315,321 @@ return true;
   <div class="footer-actions"><button class="btn primary" data-act="again">${info.practice?"Back to level":"Run another block"}</button>${(!info.practice&&rec.next!==L.id)?`<button class="btn" data-act="next">Go to Level ${rec.next}</button>`:""}<button class="btn" data-go-profile="1">View profile</button></div>`;
   }
 
+  function genericItems(spec){return spec.trials||spec.items||[]}
+  function genericWindow(level){
+  return level.responseWindowMs||level.responseWindow||level.windowMs||level.timeLimitMs||level.ms||(level.timeSeconds&&level.timeSeconds*1000)||30000;
+  }
+  function genericItemText(item){
+  if(item.stimulusText)return item.stimulusText;
+  if(item.display)return item.display;
+  if(item.digit!=null&&item.letter!=null)return`${item.digit}   ${item.letter}`;
+  if(item.string)return item.string;
+  if(item.text)return item.text;
+  if(item.stimulus&&typeof item.stimulus==="object"){
+    const digit=item.stimulus.digit,letter=item.stimulus.letter;
+    if(digit!=null&&letter!=null)return`${digit}   ${letter}`;
+  }
+  if(item.stimulus!=null)return String(item.stimulus);
+  return"";
+  }
+  function genericCueText(item){
+  return item.cue||item.rule||item.ruleLetter||"";
+  }
+  function renderGenericRunning(){
+  const task=getTask(),module=task.module,practice=G.mode==="practice";
+  const controls=module.id==="series"
+    ? `<form id="seriesAnswerForm" class="series-answer-form"><label for="seriesAnswer">Your answer</label><input id="seriesAnswer" type="text" inputmode="text" autocomplete="off" aria-label="Next term"><button class="btn primary" type="submit" data-task-submit>Submit answer</button><button class="btn" type="button" data-task-undetermined>Can't be determined</button></form>`
+    : `<div class="resp" id="taskControls" ${module.id==="switching"?"hidden":""}><button class="rbtn" type="button" data-task-response="F">Left <small>F</small></button><button class="rbtn" type="button" data-task-response="J">Right <small>J</small></button></div>`;
+  const taskVisual=module.id==="series"
+    ? `<div class="targetbox" id="seriesCountdown" role="timer"></div><div class="series-terms" id="seriesTerms"></div>`
+    : `${module.id==="switching"?`<div class="targetbox" id="genericCue"></div>`:""}<div class="task-stimulus" id="genericStimulus" aria-live="off"></div>`;
+  $("#labCard").innerHTML=`<div class="runhead"><span class="tag">${practice?"PRACTICE · feedback on · not recorded":"RECORDED · no feedback"}</span><span id="genericTrialText" class="progress-label"></span></div>
+    <div class="stage generic-stage">
+      ${taskVisual}
+      ${controls}
+      <div id="genericMessage" class="empty" aria-live="polite"></div>
+      <button class="btn" type="button" data-act="abort">Stop block</button>
+    </div>`;
+  }
+  function startGenericBlock(mode){
+  if(G&&!G.done)return;
+  const task=getTask(),module=task.module,level=module.levels[curLevel-1],seed=(Math.random()*4294967296)>>>0;
+  const spec=module.generate(level,seed,mode),items=genericItems(spec);
+  if(!items.length)throw new Error(`${task.name} generated an empty block.`);
+  G={taskId:task.id,module,level,spec,seed,mode,items,index:-1,responses:Array(items.length).fill(null),completed:Array(items.length).fill(false),drifts:[],frameCounts:Array(items.length).fill(null),onset:null,ready:false,done:false,timer:null,hideTimer:null,maskTimer:null,cueTimer:null,countdownTimer:null,countdownInterval:null,frameRequest:null};
+  renderGenericRunning();renderLab();
+  scheduleGenericNext(Number(items[0].jitterMs)||0);
+  }
+  function scheduledGenericCallback(delay,callback){
+  const target=performance.now()+Math.max(0,delay);
+  G.timer=setTimeout(()=>{
+    if(!G||G.done)return;
+    G.drifts.push(Math.abs(performance.now()-target));
+    callback();
+  },Math.max(0,delay));
+  }
+  function scheduleGenericNext(delay){
+  if(!G||G.done)return;
+  const next=G.index+1;
+  if(next>=G.items.length)return finishGenericBlock();
+  scheduledGenericCallback(delay,()=>showGenericTrial(next));
+  }
+  function showGenericTrial(index){
+  if(!G||G.done)return;
+  G.index=index;G.ready=false;G.onset=null;
+  const item=G.items[index],module=G.module,level=G.level;
+  const count=$("#genericTrialText");
+  if(count)count.textContent=`Item ${index+1} / ${G.items.length}`;
+  const message=$("#genericMessage");
+  if(message)message.textContent="";
+  if(module.id==="series"){
+    const terms=$("#seriesTerms"),input=$("#seriesAnswer");
+    if(terms)terms.textContent=`${item.shownTerms.join(", ")}, ?`;
+    if(input){input.value="";input.focus()}
+    G.onset=performance.now();G.ready=true;
+    beginGenericCountdown(genericWindow(level));
+    return;
+  }
+  if(module.id==="switching"){
+    const csi=level.csiMs!=null?level.csiMs:Number(level.csi)||0;
+    const cue=$("#genericCue");
+    if(cue)cue.textContent=genericCueText(item);
+    if(csi>0&&level.id!==10){
+      const stimulus=$("#genericStimulus");
+      if(stimulus)stimulus.textContent="";
+      G.cueTimer=setTimeout(()=>{
+        if(!G||G.done)return;
+        G.drifts.push(Math.abs(performance.now()-(G.cueTarget||performance.now())));
+        revealGenericStimulus(item);
+      },csi);
+      G.cueTarget=performance.now()+csi;
+      return;
+    }
+    revealGenericStimulus(item);
+    if(level.id===10){
+      G.cueTimer=setTimeout(()=>{if(cue)cue.textContent=""},80);
+    }
+    return;
+  }
+  revealGenericStimulus(item);
+  }
+  function revealGenericStimulus(item){
+  if(!G||G.done)return;
+  const stimulus=$("#genericStimulus");
+  if(stimulus)stimulus.textContent=genericItemText(item);
+  G.onset=performance.now();G.ready=true;
+  const controls=$("#taskControls");
+  if(controls)controls.hidden=false;
+  const exposure=G.level.exposureMs==null?G.level.exposure:G.level.exposureMs;
+  if(exposure&&exposure>0){
+    if(exposure<100){
+      const frames=G.level.exposureIsFrame?1:G.level.exposureFrames||G.items[G.index].exposureFrames||Math.max(1,Math.round((DEV_INFO.hz||60)*exposure/1000));
+      G.frameCounts[G.index]=0;
+      let shown=0;
+      const hideAfterFrame=()=>{
+        if(!G||G.done)return;
+        shown++;G.frameCounts[G.index]=shown;
+        if(shown>=frames)maskGenericStimulus(item);
+        else G.frameRequest=requestAnimationFrame(hideAfterFrame);
+      };
+      G.frameRequest=requestAnimationFrame(hideAfterFrame);
+    }else{
+      G.hideTimer=setTimeout(()=>maskGenericStimulus(item),exposure);
+    }
+  }
+  const deadline=G.onset+genericWindow(G.level);
+  G.timer=setTimeout(()=>{G.drifts.push(Math.abs(performance.now()-deadline));completeGenericTrial(null)},genericWindow(G.level));
+  }
+  function maskGenericStimulus(item){
+  if(!G||G.done)return;
+  const stimulus=$("#genericStimulus");
+  const mask=item.mask||item.maskString||"";
+  if(stimulus)stimulus.textContent=mask;
+  const maskDuration=G.level.maskMs||G.level.maskDurationMs||0;
+  if(maskDuration){
+    G.maskTimer=setTimeout(()=>{if(stimulus)stimulus.textContent=""},maskDuration);
+  }else if(stimulus)stimulus.textContent="";
+  }
+  function beginGenericCountdown(duration){
+  const end=G.onset+duration;
+  const update=()=>{
+    if(!G||G.done)return;
+    const remaining=Math.max(0,end-performance.now());
+    const seconds=Math.ceil(remaining/1000);
+    const display=$("#seriesCountdown");
+    if(display)display.textContent=`00:${String(seconds).padStart(2,"0")}`;
+    if(remaining<=0){G.drifts.push(Math.abs(performance.now()-end));completeGenericTrial(null);return}
+    G.countdownTimer=setTimeout(update,Math.min(250,remaining));
+  };
+  update();
+  G.timer=setTimeout(()=>{G.drifts.push(Math.abs(performance.now()-end));completeGenericTrial(null)},duration);
+  }
+  function genericResponseIsCorrect(item,response,module){
+  if(module.id==="series"){
+    if(item.underdetermined||item.isUnderdetermined||item.solvable===false)return response.cannotDetermine;
+    return item.solvable!==false&&!response.cannotDetermine&&String(response.answer).trim().toUpperCase()===String(item.answer).trim().toUpperCase();
+  }
+  return response.key===item.correctKey;
+  }
+  function submitGenericResponse(key){
+  if(!G||G.done||!G.ready||G.completed[G.index])return;
+  const item=G.items[G.index],response=G.module.id==="series"
+    ? {answer:key.answer,cannotDetermine:!!key.cannotDetermine,rt:performance.now()-G.onset}
+    : {key,rt:performance.now()-G.onset};
+  completeGenericTrial(response);
+  }
+  function completeGenericTrial(response){
+  if(!G||G.done||G.completed[G.index])return;
+  const state=G,item=state.items[state.index];
+  clearTimeout(state.timer);clearTimeout(state.hideTimer);clearTimeout(state.maskTimer);clearTimeout(state.cueTimer);clearTimeout(state.countdownTimer);
+  if(state.countdownInterval)clearInterval(state.countdownInterval);
+  state.completed[state.index]=true;state.ready=false;
+  state.responses[state.index]=response;
+  if(state.mode==="practice"){
+    const message=$("#genericMessage");
+    if(message)message.textContent=response
+      ? genericResponseIsCorrect(item,response,state.module)?"Correct.":"Not quite."
+      : "Time is up for this item.";
+  }
+  const next=state.index+1;
+  if(next>=state.items.length)return finishGenericBlock();
+  const delay=state.module.id==="series"?350:Number(state.items[next].jitterMs)||0;
+  if(state.mode==="practice"&&state.module.id!=="series"){
+    scheduledGenericCallback(300+delay,()=>showGenericTrial(next));
+  }else scheduledGenericCallback(delay,()=>showGenericTrial(next));
+  }
+  function genericMetricValue(module,metrics){
+  const key=module.profile.metricKey;
+  if(metrics[key]!=null)return metrics[key];
+  if(metrics.primaryMetricValue!=null)return metrics.primaryMetricValue;
+  return null;
+  }
+  function genericMetricText(value,key){
+  if(value==null)return"—";
+  if(typeof value!=="number")return String(value);
+  if(/accuracy/i.test(key))return`${Math.round(value*100)}%`;
+  if(/rt|cost/i.test(key))return`${Math.round(value)} ms`;
+  return Number.isInteger(value)?String(value):value.toFixed(2);
+  }
+  function genericResultCards(module,metrics,level){
+  if(module.id==="flanker"){
+    const conditions=metrics.conditions||{};
+    const congruent=conditions.congruent||{};
+    const incongruent=conditions.incongruent||{};
+    metrics={...metrics,congruentMedianRt:metrics.congruentMedianRt||congruent.medianRt,incongruentMedianRt:metrics.incongruentMedianRt||incongruent.medianRt};
+  }
+  const fields={
+    flanker:[["Overall accuracy",metrics.overallAccuracy],["Congruent median RT",metrics.congruentMedianRt],["Incongruent median RT",metrics.incongruentMedianRt],["Interference cost",metrics.interferenceCost]],
+    switching:[["Median RT",metrics.medianRt],["Switch cost",metrics.switchCost],["Mixing cost",metrics.mixingCost]],
+    series:[["Correct items",metrics.correctCount],["Median time",metrics.medianRt],["Timeouts",metrics.timeouts],...(level.id===10?[["False declines",metrics.falseDeclines],["False answers",metrics.falseAnswers]]:[])]
+  }[module.id]||[];
+  return fields.map(([label,value])=>{
+    if(value&&typeof value==="object"){
+      const estimate=value.estimate==null?null:value.estimate;
+      const interval=value.lower==null?"":`<small>95% interval ${Math.round(value.lower)} to ${Math.round(value.upper)} ms · ${value.unreliable===true||value.reliable===false?"unreliable":"reliable"}</small>`;
+      const unavailable=value.available===false
+        ?value.reason==="unavailable"?"Not applicable":"Insufficient correct responses"
+        :estimate==null?"Needs a baseline":genericMetricText(estimate,"cost");
+      const reliability=module.id==="flanker"&&label==="Interference cost"&&metrics.reliability
+        ?`<small>${metrics.reliability.status}</small>`:"";
+      return`<div class="metric"><small>${label}</small><b>${unavailable}</b>${interval}${reliability}</div>`;
+    }
+    return`<div class="metric"><small>${label}</small><b>${genericMetricText(value,label)}</b></div>`;
+  }).join("");
+  }
+  function finishGenericBlock(){
+  if(!G||G.done)return;
+  clearTimers();G.done=true;G.showingResult=true;
+  const state=G,module=state.module,level=state.level,store=taskStore(state.taskId),existing=store.get();
+  const metrics=module.score(level,state.spec,state.responses,state.seed,existing);
+  const timing={mean:window.HCCTTaskEngineCommon.mean(state.drifts),max:state.drifts.length?Math.max(...state.drifts):0};
+  const validity=module.validate(metrics,level,timing);
+  let saved=null;
+  if(state.mode==="assessment"){
+    const record={...metrics,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ts:new Date().toISOString(),taskId:state.taskId,levelId:level.id,mode:"assessment",seed:state.seed,valid:validity.valid,flags:validity.flags,metrics,timing,frameCounts:state.frameCounts,rt:metrics.medianRt||metrics.medianRT||metrics.rt||null,device:{hz:DEV_INFO.hz,dpr:window.devicePixelRatio,w:innerWidth,h:innerHeight,touch:"ontouchstart"in window,ua:navigator.userAgent.slice(0,140)}};
+    existing.push(record);saved=store.set(existing);
+  }
+  renderGenericResult(metrics,{level,practice:state.mode==="practice",valid:validity.valid,flags:validity.flags,saved,task:state.taskId});
+  renderLab();
+  }
+  function renderGenericResult(metrics,info){
+  const module=getTask().module,value=genericMetricValue(module,metrics);
+  const status=info.valid?module.statusOf(value):"Not scored";
+  const recommendation=module.recommend(info.level,metrics,info.valid);
+  if(G)G.nextLevel=recommendation.next;
+  const details=genericResultCards(module,metrics,info.level);
+  $("#labCard").innerHTML=`<div class="eyebrow">${info.practice?"Practice result · not recorded":"Block result · recorded"} · Level ${info.level.id}</div>
+    <div class="result-score"><div><small class="progress-label">${module.profile.metricName}</small><div class="big">${genericMetricText(value,module.profile.metricKey)}</div></div><span class="st ${stCls(status,module.policyType)}">${status}</span></div>
+    <div class="metrics">${details}</div>
+    ${info.flags.map(flag=>`<div class="flag">${module.flagText(flag)}</div>`).join("")}
+    <p>${info.practice?"Practice scores are not stored. When ready, run a recorded block.":recommendation.text}</p>
+    ${info.saved===false?`<div class="flag">Browser storage was unavailable, so this block could not be saved.</div>`:""}
+    <div class="footer-actions"><button class="btn primary" data-act="again">${info.practice?"Back to level":"Run another block"}</button>${recommendation.next&&recommendation.next!==info.level.id?`<button class="btn" data-act="next">Go to Level ${recommendation.next}</button>`:""}<button class="btn" data-go-profile="1">View profile</button></div>`;
+  }
+  function abortGenericBlock(reason){
+  if(!G||G.done)return;
+  clearTimers();G.done=true;G.showingResult=true;
+  $("#labCard").innerHTML=`<div class="eyebrow">Block not recorded</div><h2>Stopped</h2><p>${reason||"You stopped the block."} Nothing was saved or counted as low ability.</p><div class="footer-actions"><button class="btn primary" data-act="again">Back to level ${G.level.id}</button></div>`;
+  renderLab();
+  }
+
+  document.addEventListener("submit",e=>{
+  if(e.target.id!=="seriesAnswerForm")return;
+  e.preventDefault();
+  const input=$("#seriesAnswer");
+  submitGenericResponse({answer:input.value,cannotDetermine:false});
+  });
+  document.addEventListener("keydown",e=>{
+  if(!G||G.done||G.module.id==="series"||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.target.closest("input,textarea,select"))return;
+  const key=e.key.toLowerCase();
+  if(key==="f"||key==="j"){e.preventDefault();submitGenericResponse(key.toUpperCase())}
+  });
+
   document.addEventListener("click",e=>{
+  const taskResponse=e.target.closest("[data-task-response]");
+  if(taskResponse){submitGenericResponse(taskResponse.dataset.taskResponse);return}
+  const undetermined=e.target.closest("[data-task-undetermined]");
+  if(undetermined){submitGenericResponse({answer:"",cannotDetermine:true});return}
   const registryButton=e.target.closest("[data-open-task]");
   if(registryButton){
     if(selectTask(registryButton.dataset.openTask))showPage("lab");
     return;
   }
   const lv=e.target.closest("[data-level]");
-  if(lv&&!(S&&!S.done)){curLevel=Number(lv.dataset.level);if(S)S.showingResult=false;renderLab();renderIdle();return}
+  if(lv&&!((S&&!S.done)||(G&&!G.done))){curLevel=Number(lv.dataset.level);if(S)S.showingResult=false;if(G)G.showingResult=false;renderLab();renderIdle();return}
   const a=e.target.closest("[data-act]");
   if(a){
     const act=a.dataset.act;
-    if(act==="practice")getTask().module.ui.start("practice");
-    if(act==="assess")getTask().module.ui.start("assessment");
+    if(act==="practice")startBlock("practice");
+    if(act==="assess")startBlock("assessment");
     if(act==="abort")abortBlock("You stopped the block.");
-    if(act==="again"){if(S)S.showingResult=false;renderLab();renderIdle()}
-    if(act==="next"){if(S){curLevel=S.nextLevel||curLevel;S.showingResult=false}renderLab();renderIdle()}
+    if(act==="again"){if(S)S.showingResult=false;if(G)G.showingResult=false;renderLab();renderIdle()}
+    if(act==="next"){if(S){curLevel=S.nextLevel||curLevel;S.showingResult=false}if(G){curLevel=G.nextLevel||curLevel;G.showingResult=false}renderLab();renderIdle()}
     if(act==="export-json")download("HCCT-nback-data.json",profileEngine.toJSON(allTaskBlocks()),"application/json");
     if(act==="export-csv")download("HCCT-nback-data.csv",profileEngine.toCSV(allTaskBlocks()),"text/csv");
     if(act==="clear"){if(confirm("Delete all recorded task blocks from this browser?")){taskRegistry.forEach(task=>taskStore(task.id).set([]));renderProfile()}}
   }
   if(e.target.closest("[data-go-profile]"))showPage("profile");
   });
-  document.addEventListener("keydown",e=>{const lv=e.target.closest&&e.target.closest("[data-level]");if(lv&&(e.key==="Enter"||e.key===" ")&&!(S&&!S.done)){e.preventDefault();lv.click()}});
+  document.addEventListener("keydown",e=>{const lv=e.target.closest&&e.target.closest("[data-level]");if(lv&&(e.key==="Enter"||e.key===" ")&&!((S&&!S.done)||(G&&!G.done))){e.preventDefault();lv.click()}});
 
   /* ---------- Profile ---------- */
+  function profileLevelStats(task,level,blocks){
+  const module=task.module,levelBlocks=blocks.filter(block=>block.levelId===level.id);
+  const result=module.statusPolicy(levelBlocks);
+  if(result.meanValue==null){
+    for(const key of["meanD","meanAccuracy","meanCorrect","meanScore"]){
+      if(result[key]!=null){result.meanValue=result[key];break}
+    }
+  }
+  const valid=levelBlocks.filter(block=>block.valid&&block.mode==="assessment").sort((a,b)=>a.ts<b.ts?-1:1);
+  const values=valid.map(block=>Number(profileEngine.metricValue(task,block))).filter(Number.isFinite);
+  if(result.meanValue==null&&values.length)result.meanValue=window.HCCTTaskEngineCommon.mean(values.slice(-3));
+  if(result.first==null&&values.length)result.first=values[0];
+  if(result.latest==null&&values.length)result.latest=values[values.length-1];
+  return result;
+  }
   function chartSVG(task,stats){
   const axis=task.module.profile.axis,W=720,H=230,l=34,r=10,t=14,bt=30,iw=W-l-r,ih=H-t-bt,bw=iw/task.module.levels.length;
   const y=v=>t+ih-(Math.max(axis.min,Math.min(axis.max,v))-axis.min)/(axis.max-axis.min)*ih;
@@ -294,7 +637,7 @@ return true;
   axis.ticks.forEach(v=>{s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="#293746"/><text x="${l-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
   axis.referenceLines.forEach((line,i)=>{const tone=task.module.policyType==="calibration"?"#9aabba":i===0?"#f2c078":"#8bd3c7";s+=`<line x1="${l}" x2="${W-r}" y1="${y(line.value)}" y2="${y(line.value)}" stroke="${tone}" stroke-dasharray="4 4"/><text x="${W-r}" y="${y(line.value)-4}" text-anchor="end" style="fill:${tone}">${line.label}</text>`});
   stats.forEach((st,i)=>{
-    const x=l+i*bw+bw*.2,w=bw*.6,value=st.meanD;
+    const x=l+i*bw+bw*.2,w=bw*.6,value=st.meanValue;
     if(st.n){const col=task.module.policyType==="calibration"?"#9aabba":st.status==="Mastered"?"#8bd3c7":st.status==="Developing"?"#f2c078":"#ff9d9d",top=y(value);
     s+=`<rect x="${x}" y="${top}" width="${w}" height="${Math.max(1,t+ih-top)}" rx="4" fill="${col}" opacity="${st.n>=3?1:st.n===2?.75:.5}"/>`;
     s+=`<text x="${x+w/2}" y="${top-4}" text-anchor="middle">${value.toFixed(1)}</text>`}
@@ -303,16 +646,67 @@ return true;
   });
   return s+`</svg>`;
   }
+  function taskSupplement(task,blocks){
+  const module=task.module;
+  if(module.id==="flanker"){
+    const rows=module.levels.map(level=>{
+      const recent=blocks.filter(block=>block.levelId===level.id&&block.valid&&block.mode==="assessment").sort((a,b)=>a.ts<b.ts?-1:1);
+      const block=recent[recent.length-1];
+      if(!block)return`<tr><td>L${level.id}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
+      const metrics=block.metrics||block,conditions=metrics.conditions||{};
+      const firstCondition=conditions.congruent||conditions.single||conditions.neutral||{},incongruent=conditions.incongruent||{};
+      const cost=metrics.interferenceCost||{},reliability=metrics.reliability||{};
+      const costText=cost.available&&cost.estimate!=null?`${Math.round(cost.estimate)} ms`:cost.reason==="unavailable"?"Not applicable":"Insufficient responses";
+      const interval=cost.available&&cost.lower!=null?`${Math.round(cost.lower)} to ${Math.round(cost.upper)} ms`:"—";
+      const congruentRt=Number.isFinite(firstCondition.medianRt)?`${Math.round(firstCondition.medianRt)} ms`:"—";
+      const incongruentRt=Number.isFinite(incongruent.medianRt)?`${Math.round(incongruent.medianRt)} ms`:"—";
+      return`<tr><td>L${level.id}</td><td>${congruentRt}</td><td>${incongruentRt}</td><td>${costText}</td><td>${interval}</td><td>${reliability.status||"—"}</td></tr>`;
+    }).join("");
+    return`<div class="card" style="margin-top:14px"><div class="eyebrow">Secondary measures</div><h3>Condition reaction times and interference</h3><p>Latest valid assessment block per level. Median reaction times include correct responses only. The first-condition RT is single-letter at L1, neutral at L2, and congruent at L3+; interference is the incongruent-minus-congruent median RT difference with a seeded bootstrap interval. These measures are descriptive and never affect status.</p><div class="scroll"><table class="table"><thead><tr><th>Level</th><th>First condition median RT</th><th>Incongruent median RT</th><th>Interference</th><th>95% interval</th><th>Reliability</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }
+  if(module.id==="switching"){
+    const rows=module.levels.map(level=>{
+      const recent=blocks.filter(block=>block.levelId===level.id&&block.valid&&block.mode==="assessment").sort((a,b)=>a.ts<b.ts?-1:1);
+      const block=recent[recent.length-1];
+      if(!block)return`<tr><td>L${level.id}</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
+      const switchCost=block.switchCost!==undefined?block.switchCost:block.metrics&&block.metrics.switchCost;
+      const mixingCost=block.mixingCost!==undefined?block.mixingCost:block.metrics&&block.metrics.mixingCost;
+      const cost=switchCost&&typeof switchCost==="object"&&switchCost.estimate!=null
+        ?`${Math.round(switchCost.estimate)} ms`
+        :switchCost==="unavailable"||switchCost==null?"—":"—";
+      const interval=switchCost&&typeof switchCost==="object"&&switchCost.lower!=null
+        ?`${Math.round(switchCost.lower)} to ${Math.round(switchCost.upper)} ms`
+        :"—";
+      const reliability=switchCost&&typeof switchCost==="object"
+        ?switchCost.reliable===true?"Reliable":switchCost.reliable===false?"Unreliable":"Not established"
+        :"—";
+      const mixing=Number.isFinite(mixingCost)?`${Math.round(mixingCost)} ms`:mixingCost==="needs a baseline"?"Needs baseline":"—";
+      return`<tr><td>L${level.id}</td><td>${cost}</td><td>${interval}</td><td>${reliability}</td><td>${mixing}</td></tr>`;
+    }).join("");
+    return`<div class="card" style="margin-top:14px"><div class="eyebrow">Secondary measures</div><h3>Switch and mixing costs</h3><p>Latest valid assessment block per level. Switch cost is the median reaction-time difference between correct switch and repeat trials; its bootstrap interval can be noisy. Mixing cost compares repeat-trial reaction time with a pure-rule baseline and is shown only when that baseline exists.</p><div class="scroll"><table class="table"><thead><tr><th>Level</th><th>Switch cost</th><th>95% interval</th><th>Reliability</th><th>Mixing cost</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }
+  if(module.id==="series"){
+    const levelTen=blocks.filter(block=>block.levelId===10&&block.mode==="assessment").sort((a,b)=>a.ts<b.ts?1:-1).slice(0,8);
+    const rows=levelTen.map(block=>{
+      const metrics=block.metrics||block;
+      return`<tr><td>${new Date(block.ts).toLocaleDateString()}</td><td>${block.valid?"Valid":"Not scored"}</td><td>${Number(metrics.falseDeclines)||0}</td><td>${Number(metrics.falseAnswers)||0}</td><td>${Number(metrics.cannotDetermineCount)||0}</td></tr>`;
+    }).join("")||`<tr><td colspan="5">No Level 10 blocks yet.</td></tr>`;
+    return`<div class="card" style="margin-top:14px"><div class="eyebrow">Level 10 diagnostic measures</div><h3>Underdetermined-item responses</h3><p>False declines are “Can’t be determined” responses on solvable items; false answers are typed answers to underdetermined items. These counts are descriptive, not a validated measure.</p><div class="scroll"><table class="table"><thead><tr><th>When</th><th>Validity</th><th>False declines</th><th>False answers</th><th>Can’t be determined</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }
+  return"";
+  }
   function renderTaskProfile(task,blocks){
   const module=task.module,levels=module.levels,metric=module.profile.metricName;
-  const stats=levels.map(level=>module.statusPolicy(blocks.filter(b=>b.levelId===level.id)));
+  const stats=levels.map(level=>profileLevelStats(task,level,blocks));
   const valid=blocks.filter(b=>b.valid&&b.mode==="assessment"),unscored=blocks.length-valid.length;
   const mastered=stats.map((s,i)=>s.status==="Mastered"?i+1:0).filter(Boolean),top=mastered.length?Math.max(...mastered):null;
   const suggested=module.suggestedLevel(blocks);
   const emptyState=blocks.length?"":`<div class="card"><h3>No recorded blocks yet</h3><p>Run a recorded block in the Lab to begin. Each level is <span class="st calibration">Unassessed</span> until there is valid evidence; unassessed does not mean low.</p><div class="footer-actions"><button class="btn primary" data-go="lab" onclick="showPage('lab')">Open the Lab</button></div></div>`;
-  const rows=levels.map((level,i)=>{const stat=stats[i];return`<tr><td>L${level.id}</td><td>${module.nameOf(level)}<br><small style="color:var(--muted)">${level.tier} · ${(level.ms/1000).toFixed(1)}s</small></td><td>${stat.n}</td><td>${stat.n?stat.first.toFixed(2):"—"}</td><td>${stat.n?stat.latest.toFixed(2):"—"}</td><td>${stat.n?stat.meanD.toFixed(2):"—"}</td><td><span class="st ${stCls(stat.status,module.policyType)}">${stat.status}</span></td><td>${stat.n?stat.evidence:"—"}</td></tr>`}).join("");
+  const rows=levels.map((level,i)=>{const stat=stats[i],label=module.id==="nback"?`${level.tier} · ${(level.ms/1000).toFixed(1)}s`:module.levelSummary(level);return`<tr><td>L${level.id}</td><td>${module.nameOf(level)}<br><small style="color:var(--muted)">${label}</small></td><td>${stat.n}</td><td>${stat.n&&stat.first!=null?Number(stat.first).toFixed(2):"—"}</td><td>${stat.n&&stat.latest!=null?Number(stat.latest).toFixed(2):"—"}</td><td>${stat.n&&stat.meanValue!=null?Number(stat.meanValue).toFixed(2):"—"}</td><td><span class="st ${stCls(stat.status,module.policyType)}">${stat.status}</span></td><td>${stat.n?stat.evidence:"—"}</td></tr>`}).join("");
   const hist=blocks.slice().sort((a,b)=>a.ts<b.ts?1:-1).slice(0,12).map(block=>{const date=new Date(block.ts),flags=(block.flags||[]).map(module.flagText).join("; ");return`<tr><td>${date.toLocaleDateString()} ${date.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</td><td>L${block.levelId} · ${module.nameOf(levels[block.levelId-1])}</td><td>${block.valid?Number(profileEngine.metricValue(task,block)).toFixed(2):"—"}</td><td>${block.rt?Math.round(block.rt)+" ms":"—"}</td><td>${block.valid?"Valid":"Not scored"}${flags?` <small style="color:var(--warm)">· ${flags}</small>`:""}</td></tr>`}).join("");
   const best=top?stats[top-1]:null;
+  const supplement=module.profile.renderSupplement?module.profile.renderSupplement(blocks):taskSupplement(task,blocks);
+  const uncertaintyNote=module.profile.uncertaintyNote||(module.id==="series"?"With 8 items, one item changes the score by 12.5 percentage points; a single block is a rough hint.":"");
   return`<section class="section">${emptyState}
   <div class="eyebrow">${module.meta.groups.join(" · ")}</div><h2>${task.name}</h2>
   <div class="cards4">
@@ -320,7 +714,8 @@ return true;
     <div class="card"><small class="progress-label">Valid recorded blocks</small><div class="big" style="font-size:38px;margin-top:8px">${valid.length}</div><p style="margin-top:8px">${unscored?unscored+" block"+(unscored>1?"s":"")+" not scored (flags)":"No discarded blocks"}</p></div>
     <div class="card"><small class="progress-label">Suggested next level</small><div class="big" style="font-size:38px;margin-top:8px">L${suggested}</div><p style="margin-top:8px">${module.nameOf(levels[suggested-1])}</p></div>
   </div>
-  <div class="card"><div class="eyebrow">${metric} by level</div><h3>Mean of the last three valid blocks per level</h3><p>Bar opacity shows evidence: faint = 1 block, medium = 2, solid = 3 or more. Dots are unassessed levels.</p>${chartSVG(task,stats)}</div>
+  <div class="card"><div class="eyebrow">${metric} by level</div><h3>Mean of the last three valid blocks per level</h3><p>Bar opacity shows evidence: faint = 1 block, medium = 2, solid = 3 or more. Dots are unassessed levels.</p>${uncertaintyNote?`<p>${uncertaintyNote}</p>`:""}${chartSVG(task,stats)}</div>
+  ${supplement}
   <div class="card" style="margin-top:14px"><div class="eyebrow">Levels</div><h3>Baseline and trend</h3><p>"First" versus "Latest" shows your own change at that level. Part of any rise is learning the task, not capability.</p><div class="scroll"><table class="table"><thead><tr><th>#</th><th>Level</th><th>Blocks</th><th>First ${module.profile.unit}</th><th>Latest ${module.profile.unit}</th><th>Mean (last 3)</th><th>Status</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table></div></div>
   <div class="card" style="margin-top:14px"><div class="eyebrow">Recent blocks</div><div class="scroll"><table class="table"><thead><tr><th>When</th><th>Level</th><th>${module.profile.unit}</th><th>Mean RT (hits)</th><th>Validity and flags</th></tr></thead><tbody>${hist}</tbody></table></div></div>
   <div class="card" style="margin-top:14px"><div class="eyebrow">What this profile can and cannot say</div><p>A single task supports a statement about performance on this task, not a global capability. Results are exploratory and unvalidated.</p>
@@ -333,7 +728,8 @@ return true;
   $("#profileBody").innerHTML=`${taskProfiles}<div class="notice">There is no combined score across tasks.</div>`;
   }
 
-  getTask().module.ui.start=startBlock;
-  getTask().module.ui.handleInput=respond;
-  getTask().module.ui.finish=finishBlock;
+  const nbackTask=taskRegistry.find(task=>task.id==="nback");
+  nbackTask.module.ui.start=startBlock;
+  nbackTask.module.ui.handleInput=respond;
+  nbackTask.module.ui.finish=finishBlock;
   render();restore();

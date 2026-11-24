@@ -16,6 +16,13 @@
   .runhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
   .stage{display:grid;gap:16px;justify-items:center;padding:8px 0 4px}
   .targetbox{border:1px solid var(--line);border-radius:10px;padding:6px 14px;color:var(--muted);font-size:13px}.targetbox b{color:var(--accent);font-size:20px;margin-left:6px}
+  .generic-stage{min-height:280px}
+  .task-stimulus{min-height:72px;display:grid;place-items:center;text-align:center;font:700 clamp(30px,7vw,64px)/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+  .series-terms{max-width:100%;text-align:center;font:700 clamp(20px,4vw,36px)/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+  .series-answer-form{display:grid;grid-template-columns:1fr auto auto;gap:8px;width:min(100%,620px);align-items:end}
+  .series-answer-form label{grid-column:1/-1;color:var(--muted);font-size:12px}
+  .series-answer-form input{min-width:0}
+  .result-score{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin:10px 0}
   .nb-grid{--cell:clamp(62px,15vw,92px);display:grid;grid-template-columns:repeat(3,var(--cell));gap:8px}
   .cell{width:var(--cell);height:var(--cell);border-radius:14px;background:#0e151d;border:1px solid var(--line);display:grid;place-items:center;font-size:calc(var(--cell)*.46);font-weight:800;color:#10201f}
   .cell.on{background:var(--accent);border-color:var(--accent)}
@@ -50,4 +57,4 @@
   svg.chart text{fill:var(--muted);font-size:11px}
   .scroll{overflow:auto}
   @media(max-width:850px){.shell{grid-template-columns:minmax(0,1fr)}aside{height:auto;position:relative;padding:12px 15px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:4px 5px 12px}.side-note{display:none}.nav-row{display:flex;gap:5px;min-width:0;overflow:auto}.nav-label{display:none}.nav{white-space:nowrap;width:auto;padding:8px 10px}.workspace,.lab-grid{grid-template-columns:1fr}main{padding:25px 18px 55px}.grid{grid-template-columns:1fr 1fr}.phase-head{display:block}.progress-wrap{text-align:left;margin-top:15px}}
-  @media(max-width:520px){.grid{grid-template-columns:1fr}.topline{margin-bottom:18px}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}.topline{margin-bottom:18px}.series-answer-form{grid-template-columns:1fr 1fr}.series-answer-form label,.series-answer-form input{grid-column:1/-1}}

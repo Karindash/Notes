@@ -7,6 +7,10 @@
   <title>HCCT — Human Cognitive Capability Taxonomy</title>
   <link rel="stylesheet" href="css/styles.css">
   <script defer src="js/nback-engine.js"></script>
+  <script defer src="js/task-engine-common.js"></script>
+  <script defer src="js/flanker-engine.js"></script>
+  <script defer src="js/switching-engine.js"></script>
+  <script defer src="js/series-engine.js"></script>
   <script defer src="js/task-registry.js"></script>
   <script defer src="js/profile-engine.js"></script>
   <script defer src="js/app.js"></script>
@@ -21,7 +25,7 @@
         <button class="nav active" data-page="about"><span>◈</span> About</button>
         <button class="nav" data-page="registry"><span>▦</span> Task Registry</button>
         <button class="nav" data-page="phase1"><span>⌘</span> Phase 1 · Primitive review</button>
-        <button class="nav" data-page="lab"><span>◉</span> Lab · N-back ladder</button>
+        <button class="nav" data-page="lab"><span>◉</span><span data-lab-nav-label>Lab · N-back ladder</span></button>
         <button class="nav" data-page="profile"><span>▤</span> Profile</button>
       </div>
     </nav>
@@ -36,12 +40,12 @@
         <div class="eyebrow">An evolving taxonomy of human capability</div>
         <h1>Understand the capabilities behind human decisions.</h1>
         <p class="lead">HCCT is an exploratory framework for mapping how people perceive, process, remember, reason, decide, act, learn, and adapt across different situations.</p>
-        <div class="hero-actions"><button class="btn primary" data-go="lab">Try the N-back lab →</button><button class="btn" data-go="phase1">Explore Phase 1</button><button class="btn" id="downloadNotes">Download project notes</button></div>
+        <div class="hero-actions"><button class="btn primary" data-go="registry">Browse the task registry →</button><button class="btn" data-go="lab">Open the Lab</button><button class="btn" data-go="phase1">Explore Phase 1</button><button class="btn" id="downloadNotes">Download project notes</button></div>
       </div>
       <div class="definition">Working definition: Human cognitive capability is the set of mental and behavioral capabilities through which a person receives and interprets stimuli, transforms information, evaluates situations, makes decisions, executes actions, learns, and adapts.</div>
       <div class="section">
-        <div class="eyebrow">New in v0.2</div><h2>The first measurable task</h2>
-        <p>A twelve-level n-back ladder for working memory, from an easy 0-back to a deliberately impossible dual 7-back. Scoring uses signal detection (d′) rather than raw accuracy, and every block carries validity flags and an evidence rating. Insufficient evidence is shown as <em>unassessed</em>, never as low ability.</p>
+        <div class="eyebrow">Research workspace</div><h2>Independent tasks, separate evidence</h2>
+        <p>The registry includes N-back for working memory, Letter Flanker for selective attention, Task Switching for flexibility, and Number and Letter Series for inductive reasoning. Each task has its own instructions, difficulty ladder, scoring rules, and profile; they are not combined into a global score.</p>
       </div>
       <div class="section">
         <div class="eyebrow">Framework architecture</div><h2>From foundational operations to real-world abilities</h2>
@@ -123,9 +127,9 @@
     </section>
 
     <section class="page" id="lab">
-      <div class="eyebrow">Lab / Task 01 · Working memory</div>
+      <div class="eyebrow" id="labPageEyebrow">Lab / Task 01 · Working memory</div>
       <div class="phase-head">
-        <div><h1 style="font-size:42px">N-back ladder</h1><p>One task, twelve levels, from the easiest measurable setting to one that is designed to be beyond typical human performance. Pick a level, practise with feedback, then run a recorded block.</p></div>
+        <div><h1 id="labHeading" style="font-size:42px">N-back ladder</h1><p id="labIntroduction">One task, twelve levels, from the easiest measurable setting to one that is designed to be beyond typical human performance. Pick a level, practise with feedback, then run a recorded block.</p></div>
         <div class="progress-wrap"><div class="progress-label"><span id="labProgText">0 of 12 mastered</span></div><div class="progress"><i id="labProgBar"></i></div></div>
       </div>
       <div class="field"><label for="taskSelector">Task</label><select id="taskSelector"></select></div>
