@@ -1,22 +1,7 @@
 (function () {
-  function rng(seed) {
-    let state = seed >>> 0;
-    return function () {
-      state |= 0;
-      state = state + 0x6D2B79F5 | 0;
-      let value = Math.imul(state ^ state >>> 15, 1 | state);
-      value = value + Math.imul(value ^ value >>> 7, 61 | value) ^ value;
-      return ((value ^ value >>> 14) >>> 0) / 4294967296;
-    };
-  }
-
-  function shuffle(values, random) {
-    for (let index = values.length - 1; index > 0; index--) {
-      const other = Math.floor(random() * (index + 1));
-      [values[index], values[other]] = [values[other], values[index]];
-    }
-    return values;
-  }
+  const random = window.HCCTTaskRandom;
+  if (!random) throw new Error('task-engine-random must be loaded before task-engine-statistics.');
+  const rng = random.rng;
 
   function mean(values) {
     return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
@@ -65,12 +50,5 @@
     return count >= 3 ? 'Better' : count === 2 ? 'Moderate' : count === 1 ? 'Low' : '—';
   }
 
-  window.HCCTTaskEngineCommon = Object.freeze({
-    rng,
-    shuffle,
-    mean,
-    median,
-    bootstrapMedianDifference,
-    evidence
-  });
+  window.HCCTTaskStatistics = Object.freeze({mean, median, bootstrapMedianDifference, evidence});
 })();

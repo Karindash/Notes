@@ -1,4 +1,7 @@
 (function () {
+  const records = window.HCCTProfileRecords;
+  if (!records) throw new Error('profile-records must be loaded before profile-export.');
+  const metricValue = records.metricValue;
   const COMMON_COLUMNS = [
     'taskId',
     'levelId',
@@ -25,18 +28,6 @@
     'lureTrials',
     'hz'
   ];
-
-  function collectTaskBlocks(registry, getBlocks) {
-    return registry.flatMap(task =>
-      getBlocks(task.id).map(block => ({taskId: task.id, task, block}))
-    );
-  }
-
-  function metricValue(task, block) {
-    const key = task.module.profile.metricKey;
-    if (block.metrics && block.metrics[key] != null) return block.metrics[key];
-    return block[key] == null ? '' : block[key];
-  }
 
   function toJSON(records) {
     return JSON.stringify(records.map(({taskId, block}) => ({...block, taskId})), null, 2);
@@ -82,18 +73,5 @@
     return [columns.join(',')].concat(rows).join('\n');
   }
 
-  function calibrationStatus(value) {
-    if (value == null) return 'Unassessed';
-    if (value < 0.8) return 'Cautious';
-    if (value > 1.2) return 'Risk-seeking';
-    return 'Near-optimal';
-  }
-
-  window.HCCTProfileEngine = Object.freeze({
-    collectTaskBlocks,
-    metricValue,
-    toJSON,
-    toCSV,
-    calibrationStatus
-  });
+  window.HCCTProfileExport = Object.freeze({toJSON, toCSV});
 })();

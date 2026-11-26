@@ -10,8 +10,15 @@ function load(file) {
   vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
 
-load('js/task-engine-common.js');
-load('js/switching-engine.js');
+load('js/settings/settings-store.js');
+load('js/shared/task-engine-random.js');
+load('js/shared/task-engine-statistics.js');
+load('js/shared/task-engine-common.js');
+load('js/switching/switching-config.js');
+load('js/switching/switching-generation.js');
+load('js/switching/switching-scoring.js');
+load('js/switching/switching-policy.js');
+load('js/switching/switching-engine.js');
 
 const engine = context.window.HCCTSwitchingEngine;
 const common = context.window.HCCTTaskEngineCommon;

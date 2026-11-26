@@ -5,7 +5,18 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const context = {window: {}};
-for (const file of ['js/task-engine-common.js', 'js/series-engine.js']) {
+for (const file of [
+  'js/settings/settings-store.js',
+  'js/shared/task-engine-random.js',
+  'js/shared/task-engine-statistics.js',
+  'js/shared/task-engine-common.js',
+  'js/series/series-config.js',
+  'js/series/series-patterns.js',
+  'js/series/series-generation.js',
+  'js/series/series-scoring.js',
+  'js/series/series-policy.js',
+  'js/series/series-engine.js'
+]) {
   vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
 

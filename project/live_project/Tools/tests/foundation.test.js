@@ -10,13 +10,35 @@ function load(file) {
   vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
 
-load('js/nback-engine.js');
-load('js/task-engine-common.js');
-load('js/flanker-engine.js');
-load('js/switching-engine.js');
-load('js/series-engine.js');
-load('js/task-registry.js');
-load('js/profile-engine.js');
+load('js/settings/settings-store.js');
+load('js/shared/task-engine-random.js');
+load('js/shared/task-engine-statistics.js');
+load('js/shared/task-engine-common.js');
+load('js/nback/nback-config.js');
+load('js/nback/nback-generation.js');
+load('js/nback/nback-scoring.js');
+load('js/nback/nback-policy.js');
+load('js/nback/nback-engine.js');
+load('js/flanker/flanker-config.js');
+load('js/flanker/flanker-generation.js');
+load('js/flanker/flanker-scoring.js');
+load('js/flanker/flanker-policy.js');
+load('js/flanker/flanker-engine.js');
+load('js/switching/switching-config.js');
+load('js/switching/switching-generation.js');
+load('js/switching/switching-scoring.js');
+load('js/switching/switching-policy.js');
+load('js/switching/switching-engine.js');
+load('js/series/series-config.js');
+load('js/series/series-patterns.js');
+load('js/series/series-generation.js');
+load('js/series/series-scoring.js');
+load('js/series/series-policy.js');
+load('js/series/series-engine.js');
+load('js/registry/task-registry.js');
+load('js/profile/profile-records.js');
+load('js/profile/profile-export.js');
+load('js/profile/profile-engine.js');
 
 const engine = context.window.HCCTNBackEngine;
 const registry = context.window.HCCTTaskRegistry;
@@ -36,6 +58,21 @@ for (const task of registry) {
 assert.equal(engine.policyType, 'capability');
 assert.equal(engine.levels.length, 12);
 assert.equal(engine.statusPolicy([]).status, 'Unassessed');
+
+const nbackLevel = engine.levels[1];
+const generated = engine.generate(nbackLevel, 42, 'assessment');
+assert.equal(generated.N, nbackLevel.n + engine.SCORED);
+assert.equal(JSON.stringify(engine.generate(nbackLevel, 42, 'assessment')), JSON.stringify(generated));
+assert.notEqual(JSON.stringify(engine.generate(nbackLevel, 43, 'assessment')), JSON.stringify(generated));
+assert.equal(engine.generate(nbackLevel, 42, 'practice').N, nbackLevel.n + engine.PRACTICE);
+
+const perfectResponses = Array.from({length: generated.N}, (_, index) => ({
+  letter: engine.isTarget(generated, index, 'letter') ? 500 : null,
+  pos: null
+}));
+const nbackMetrics = engine.score(nbackLevel, generated, perfectResponses);
+assert.equal(nbackMetrics.totalResp, 9);
+assert.equal(engine.validate(nbackMetrics, nbackLevel).valid, true);
 
 function block(dprime, ts, overrides = {}) {
   return {dprime, ts, levelId: 1, mode: 'assessment', valid: true, ...overrides};

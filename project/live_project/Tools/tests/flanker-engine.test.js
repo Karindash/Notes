@@ -6,7 +6,17 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const context = {window: {}};
 
-for (const file of ['js/task-engine-common.js', 'js/flanker-engine.js']) {
+for (const file of [
+  'js/settings/settings-store.js',
+  'js/shared/task-engine-random.js',
+  'js/shared/task-engine-statistics.js',
+  'js/shared/task-engine-common.js',
+  'js/flanker/flanker-config.js',
+  'js/flanker/flanker-generation.js',
+  'js/flanker/flanker-scoring.js',
+  'js/flanker/flanker-policy.js',
+  'js/flanker/flanker-engine.js'
+]) {
   vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
 }
 
